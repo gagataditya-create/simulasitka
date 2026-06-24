@@ -6,7 +6,7 @@
     <title>Simulasi CBT TKA SMP</title>
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#4384bd">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="simulasitka.png">
@@ -14,6 +14,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Khas Pusmendik -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Custom scrollbar for better look */
         ::-webkit-scrollbar {
@@ -70,96 +72,326 @@
             color: white;
             border-color: #2563eb;
         }
+
+        /* --- TEMA PUSMENDIK --- */
+        .bg-pusmendik-dots {
+            background-color: #4384bd;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        .bg-pusmendik-motif {
+            background-color: #4384bd;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Motif Geometris Khas ANBK Baru */
+        .bg-pusmendik-motif::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -10%;
+            width: 60%; height: 200%;
+            background: rgba(255, 255, 255, 0.04);
+            transform: rotate(20deg);
+            pointer-events: none;
+        }
+        .bg-pusmendik-motif::after {
+            content: '';
+            position: absolute;
+            top: -20%; right: -15%;
+            width: 50%; height: 150%;
+            background: rgba(255, 255, 255, 0.06);
+            transform: rotate(-30deg);
+            pointer-events: none;
+        }
+
+        /* Watermark Form Konfirmasi */
+        .bg-watermark {
+            position: relative;
+            z-index: 1;
+        }
+        .bg-watermark::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(#e5e7eb 10%, transparent 10%);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        /* Custom Input Konfirmasi Style */
+        .input-konfirm {
+            border: none;
+            border-bottom: 1px solid #d1d5db;
+            background: transparent;
+            width: 100%;
+            padding-bottom: 4px;
+            outline: none;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: border-color 0.2s;
+        }
+        .input-konfirm:focus {
+            border-bottom-color: #007bff;
+        }
     </style>
 </head>
-<body class="bg-gray-200 min-h-screen flex flex-col font-sans select-none">
+<body class="bg-gray-50 min-h-screen flex flex-col select-none" style="font-family: 'Montserrat', sans-serif;">
 
     <!-- LAYAR 1: LOGIN PESERTA (Pos Satpam) -->
-    <div id="layarLogin" class="flex-1 flex flex-col justify-center items-center p-4">
-        <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full border-t-4 border-blue-600">
-            <div class="text-center mb-6">
-                <!-- Injeksi Logo simulasitka.png -->
-                <img src="simulasitka.png" alt="Logo TKA" class="w-24 h-24 mx-auto mb-4 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <i class="fas fa-user-graduate text-5xl text-blue-600 mb-4 hidden"></i>
-                
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Data Peserta TKA</h2>
-                <p class="text-gray-500 text-sm">Silakan masukkan identitas diri Anda untuk memulai simulasi ujian.</p>
+    <div id="layarLogin" class="flex-1 flex flex-col min-h-screen bg-pusmendik-dots relative">
+        <!-- Header Bar -->
+        <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
+            <div class="bg-white rounded-full p-1 shadow-md">
+                <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
             </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Nama Lengkap</label>
-                    <input type="text" id="inputNama" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors" placeholder="Ketik nama Anda...">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Asal Sekolah</label>
-                    <input type="text" id="inputSekolah" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors" placeholder="Ketik asal sekolah...">
-                </div>
-                <p id="errorLogin" class="hidden text-red-600 text-xs font-bold text-center bg-red-50 py-1 rounded"><i class="fas fa-exclamation-circle"></i> Mohon lengkapi Nama dan Asal Sekolah.</p>
-                <button onclick="masukSistem()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors mt-2 shadow-md">
-                    Masuk <i class="fas fa-sign-in-alt ml-2"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- LAYAR 2: PILIH MATA UJIAN (Papan Petunjuk) -->
-    <div id="layarMenu" class="hidden flex-1 flex-col justify-center items-center p-4">
-        <div class="max-w-2xl w-full">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">Pilih Mata Ujian</h2>
-                <p class="text-gray-600 mt-2">Halo, <span id="sapaanNama" class="font-bold text-blue-600">Siswa</span>. Silakan pilih sesi ujian yang akan Anda kerjakan.</p>
-                <button onclick="gantiAkun()" class="text-sm text-red-500 hover:text-red-700 underline mt-2 transition-colors"><i class="fas fa-sign-out-alt"></i> Ganti Data Peserta</button>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Card Bahasa Indonesia -->
-                <button onclick="mulaiUjian('Bahasa Indonesia')" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-200 text-left group">
-                    <div class="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Bahasa Indonesia</h3>
-                    <p class="text-sm text-gray-500 leading-relaxed">
-                        Terdiri dari <strong>30 soal</strong> (15 PG Biasa, 15 MCMA + Benar/Salah).<br>
-                        Dikerjakan dalam durasi waktu <strong>60 menit</strong>.
-                    </p>
-                </button>
-
-                <!-- Card Matematika -->
-                <button onclick="mulaiUjian('Matematika')" class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-200 text-left group">
-                    <div class="bg-red-100 w-14 h-14 rounded-full flex items-center justify-center text-red-600 text-2xl mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Matematika</h3>
-                    <p class="text-sm text-gray-500 leading-relaxed">
-                        Terdiri dari <strong>30 soal</strong> (15 PG Biasa, 15 MCMA + Benar/Salah).<br>
-                        Dikerjakan dalam durasi waktu <strong>60 menit</strong>.
-                    </p>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- HEADER (Fixed) -->
-    <header id="headerUjian" class="hidden bg-[#0f172a] text-white p-3 flex justify-between items-center shadow-lg sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <!-- Injeksi Logo simulasitka.png -->
-            <img src="simulasitka.png" alt="Logo" class="w-8 h-8 ml-2 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-            <i class="fas fa-desktop text-2xl ml-2 hidden"></i>
             <div>
-                <h1 id="judulUjian" class="text-lg font-bold leading-tight">SIMULASI TKA</h1>
-                <p class="text-xs text-gray-300">Jenjang: SMP/MTs Sederajat</p>
+                <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK - Simulasi TKA</p>
             </div>
         </div>
-        <div class="flex items-center gap-6 mr-2">
-            <div class="hidden md:block text-right">
-                <p class="font-bold text-sm uppercase" id="headerNamaSiswa">NAMA SISWA</p>
-                <p class="text-xs text-gray-400" id="headerAsalSekolah">Asal Sekolah</p>
+
+        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 -mt-10">
+            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] max-w-md w-full">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-extrabold text-gray-800 mb-2">Simulasi TKA</h2>
+                    <p class="text-gray-500 text-xs md:text-sm">Pilih jenjang dan mata pelajaran untuk memulai simulasi</p>
+                </div>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-user text-blue-600"></i> Nama Peserta:
+                        </label>
+                        <input type="text" id="inputNama" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm" placeholder="Ketik nama Anda...">
+                    </div>
+                    
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-building text-blue-600"></i> Asal Sekolah:
+                        </label>
+                        <input type="text" id="inputSekolah" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm" placeholder="Ketik asal sekolah...">
+                    </div>
+
+                    <!-- Pilihan Jenjang Pendidikan -->
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-layer-group text-blue-600"></i> Jenjang Pendidikan:
+                        </label>
+                        <div class="relative">
+                            <select id="inputJenjang" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-white">
+                                <option value="SMP/MTs/Sederajat" selected>SMP/MTs/Sederajat</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-book text-blue-600"></i> Mata Pelajaran:
+                        </label>
+                        <div class="relative">
+                            <select id="inputMapel" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-white">
+                                <option value="" disabled selected hidden>Pilih Mata Pelajaran...</option>
+                                <option value="Matematika">Matematika</option>
+                                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p id="errorLogin" class="hidden text-red-600 text-xs font-bold text-center bg-red-50 py-2 rounded border border-red-200"><i class="fas fa-exclamation-circle"></i> Mohon lengkapi seluruh data isian.</p>
+                    
+                    <button onclick="masukSistem()" class="w-full bg-[#4a72a4] hover:bg-[#385e8a] text-white font-bold py-3 rounded-lg transition-colors mt-4 flex justify-center items-center gap-2 text-sm md:text-base">
+                        <i class="fas fa-play text-xs"></i> Mulai Simulasi
+                    </button>
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-gray-100 text-center text-[10px] md:text-xs text-gray-500 font-medium">
+                    Copyright &copy; 2026 Pusmendik. All rights reserved.
+                </div>
             </div>
-            <!-- Timer Box -->
-            <div class="bg-red-600 px-4 py-1.5 rounded border border-red-800 shadow-inner flex items-center gap-2">
-                <i class="far fa-clock"></i>
-                <span id="timerDisplay" class="font-mono text-xl font-bold tracking-wider">01:30:00</span>
+        </div>
+    </div>
+
+    <!-- LAYAR 2: SELAMAT DATANG (Login Ujian) -->
+    <div id="layarWelcome" class="hidden flex-1 flex-col w-full relative min-h-screen bg-gray-50">
+        <!-- Top Half Blue Motif (DIPERSEMPIT) -->
+        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-pusmendik-motif z-0 shadow-md">
+            <!-- Header Bar -->
+            <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
+                <div class="bg-white rounded-full p-1 shadow-md">
+                    <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                    <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Card -->
+        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 mt-20 md:mt-16">
+            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] max-w-md w-full border border-gray-100">
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-800 mb-2">Selamat Datang</h2>
+                <p class="text-gray-500 text-xs md:text-sm mb-8 leading-relaxed">Silakan login dengan memastikan data diri dan mata pelajaran di bawah ini sudah sesuai.</p>
+                
+                <div class="space-y-4 mb-8">
+                    <!-- Data Display -->
+                    <div class="flex items-center gap-4 px-2">
+                        <i class="fas fa-user-circle text-gray-600 text-lg w-6 text-center"></i>
+                        <div class="border-b border-gray-200 pb-1 w-full text-gray-800 font-bold text-sm" id="welcomeNama">-</div>
+                    </div>
+                    <div class="flex items-center gap-4 px-2">
+                        <i class="fas fa-building text-gray-600 text-lg w-6 text-center"></i>
+                        <div class="border-b border-gray-200 pb-1 w-full text-gray-800 font-bold text-sm" id="welcomeSekolah">-</div>
+                    </div>
+                    <div class="flex items-center gap-4 px-2">
+                        <i class="fas fa-book text-gray-600 text-lg w-6 text-center"></i>
+                        <div class="border-b border-gray-200 pb-1 w-full text-gray-800 font-bold text-sm" id="welcomeMapel">-</div>
+                    </div>
+                </div>
+
+                <button onclick="lanjutLogin()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-bold py-3 rounded-full transition-colors shadow-lg shadow-blue-500/40 text-sm md:text-base tracking-wide">
+                    Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LAYAR 3: KONFIRMASI DATA & TOKEN -->
+    <div id="layarKonfirmasi" class="hidden flex-1 flex-col w-full relative min-h-screen bg-gray-50">
+        <!-- Top Half Blue Motif (DIPERSEMPIT) -->
+        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-pusmendik-motif z-0 shadow-md">
+            <!-- Header Bar -->
+            <div class="w-full flex justify-between items-center p-5 md:px-8 md:py-6 relative z-10 text-white">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white rounded-full p-1 shadow-md">
+                        <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                        <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                        <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
+                    </div>
+                </div>
+                <!-- Informasi User di Kanan Atas -->
+                <div class="hidden md:flex items-center gap-3 text-sm opacity-90">
+                    <span id="headerKonfirmIdentitas" class="tracking-wide">P000000000 - PESERTA TKA</span>
+                    <i class="fas fa-graduation-cap text-xl bg-white/20 p-2 rounded"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Layout: Token (Kiri) & Form (Kanan) -->
+        <div class="flex-1 flex flex-col md:flex-row justify-center md:items-start items-center p-4 relative z-10 mt-16 md:mt-10 gap-6 max-w-5xl mx-auto w-full">
+            
+            <!-- Left Side: Token Box -->
+            <div class="bg-white p-5 rounded-lg shadow-md w-full md:w-auto md:min-w-[300px] flex items-center justify-between border border-gray-100">
+                <div class="text-sm font-medium text-gray-700">Token : <span id="displayToken" class="font-bold tracking-widest text-gray-900 ml-1">XXXXXX</span></div>
+                <button onclick="generateToken()" class="bg-[#007bff] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded transition-colors shadow-sm">Refresh</button>
+            </div>
+
+            <!-- Right Side: Form Konfirmasi -->
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] w-full max-w-md border border-gray-100 bg-watermark">
+                <h2 class="text-xl md:text-2xl font-medium text-gray-800 mb-6 border-b border-gray-100 pb-4">Konfirmasi data Peserta</h2>
+                
+                <div class="space-y-4">
+                    <!-- Kode NIK Diubah Jadi KODE UNIK -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Kode Unik</label>
+                        <div class="border-b border-gray-200 pb-1 mt-1 text-sm text-gray-800 font-medium" id="konfirmNik">P000000000</div>
+                    </div>
+                    
+                    <!-- Nama Peserta Readonly -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nama Peserta</label>
+                        <div class="border-b border-gray-200 pb-1 mt-1 text-sm text-gray-800 font-medium" id="konfirmNamaLengkap">P000000000 - PESERTA TKA</div>
+                    </div>
+                    
+                    <!-- Jenis Kelamin -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Jenis Kelamin</label>
+                        <select class="input-konfirm mt-1 appearance-none bg-transparent cursor-pointer font-medium">
+                            <option value="L">Laki-Laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+
+                    <!-- Mata Ujian -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Mata Ujian</label>
+                        <div class="border-b border-gray-200 pb-1 mt-1 text-sm text-gray-800 font-medium" id="konfirmMapel">-</div>
+                    </div>
+
+                    <!-- Tanggal Lahir -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide mb-1">Tanggal Lahir</label>
+                        <div class="flex gap-2">
+                            <select id="konfirmTgl" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                                <option value="">Hari</option>
+                                <script>for(let i=1;i<=31;i++) document.write(`<option value="${i}">${i}</option>`);</script>
+                            </select>
+                            <select id="konfirmBln" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                                <option value="">Bulan</option>
+                                <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
+                                <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
+                                <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
+                                <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                            </select>
+                            <select id="konfirmThn" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                                <option value="">Tahun</option>
+                                <script>
+                                    let year = new Date().getFullYear();
+                                    for(let i=year;i>=year-30;i--) document.write(`<option value="${i}">${i}</option>`);
+                                </script>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Token Input -->
+                    <div class="pt-2">
+                        <label class="block text-[10px] font-bold text-[#007bff] uppercase tracking-wide">Token</label>
+                        <input type="text" id="konfirmInputToken" class="input-konfirm mt-1 font-bold uppercase tracking-widest text-base" placeholder="Ketikkan token di sini" autocomplete="off">
+                        <p id="errorKonfirmasiMsg" class="hidden text-red-500 text-[11px] font-bold mt-1.5"><i class="fas fa-times-circle"></i> Token salah atau tanggal lahir belum diisi!</p>
+                    </div>
+
+                </div>
+
+                <button onclick="submitKonfirmasi()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-medium py-2.5 rounded transition-colors shadow-md mt-8 text-sm tracking-wide">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER (Fixed) UNTUK LAYAR UJIAN -->
+    <header id="headerUjian" class="hidden bg-pusmendik-motif text-white p-3 md:px-6 md:py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <div class="flex items-center gap-4 relative z-10">
+            <div class="bg-white rounded-full p-1 shadow-md">
+                <img src="simulasitka.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <i class="fas fa-graduation-cap text-2xl md:text-3xl text-blue-600 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hidden"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                <p class="text-[9px] md:text-[10px] tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-6 mr-2 relative z-10">
+            <div class="hidden md:block text-right">
+                <p class="font-medium text-sm tracking-wide opacity-95" id="headerNamaSiswa">NAMA SISWA</p>
+                <p class="text-xs text-gray-400 hidden" id="headerAsalSekolah">Asal Sekolah</p>
+                <p class="text-xs text-gray-300 hidden" id="headerTeksJenjang">Jenjang: SMP/MTs Sederajat</p>
             </div>
         </div>
     </header>
@@ -168,19 +400,32 @@
     <main id="mainUjian" class="hidden flex-1 flex-col md:flex-row w-full max-w-7xl mx-auto p-4 gap-4 pb-24 md:pb-4">
         
         <!-- Left Column: Question Area -->
-        <div class="flex-1 bg-white shadow-md rounded-md overflow-hidden flex flex-col">
+        <div class="flex-1 bg-white shadow-md rounded-md overflow-hidden flex flex-col border border-gray-200">
+            
             <!-- Question Header Tool -->
-            <div class="bg-gray-100 border-b p-2 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <span class="bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold">SOAL NO. <span id="soalNumber">1</span></span>
-                    <span id="labelKategori" class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs font-bold border border-gray-300">PG</span>
-                    <button class="bg-white border px-2 py-1 rounded text-sm text-gray-600 hover:bg-gray-50" title="Informasi Soal"><i class="fas fa-info-circle"></i></button>
+            <div class="bg-white border-b p-4 md:px-6 md:py-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm relative z-20">
+                <!-- Sisi Kiri -->
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="text-xl md:text-2xl font-medium text-gray-800">Soal nomor <span id="soalNumber" class="font-semibold">1</span></div>
+                        <span id="labelKategori" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold border border-gray-300">PG</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-700">Ukuran font soal:</span>
+                        <button onclick="changeFontSize(-1)" class="text-sm font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
+                        <button onclick="changeFontSize(0)" class="text-base font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
+                        <button onclick="changeFontSize(1)" class="text-lg font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
+                    </div>
                 </div>
-                <div class="flex items-center gap-1">
-                    <span class="text-xs text-gray-500 mr-2 hidden sm:inline">Ukuran Font:</span>
-                    <button onclick="changeFontSize(-1)" class="bg-white border px-2 py-1 rounded text-xs font-bold hover:bg-gray-50">A-</button>
-                    <button onclick="changeFontSize(0)" class="bg-white border px-2 py-1 rounded text-sm font-bold hover:bg-gray-50">A</button>
-                    <button onclick="changeFontSize(1)" class="bg-white border px-2 py-1 rounded text-base font-bold hover:bg-gray-50">A+</button>
+                
+                <!-- Sisi Kanan -->
+                <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                    <button class="bg-[#007bff] hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs font-bold transition-colors shadow-sm tracking-wide whitespace-nowrap">INFORMASI SOAL</button>
+                    <!-- Timer Box -->
+                    <div class="bg-white border border-gray-400 px-4 py-2 rounded-full shadow-sm flex items-center gap-2 min-w-[160px] justify-center transition-colors">
+                        <span class="text-xs font-medium text-gray-600">Sisa Waktu :</span>
+                        <span id="timerDisplay" class="font-bold text-gray-800 text-sm tracking-wide">01:30:00</span>
+                    </div>
                 </div>
             </div>
 
@@ -192,9 +437,9 @@
 
         <!-- Right Column: Daftar Soal -->
         <div id="panelDaftarSoal" class="hidden md:flex w-full md:w-72 bg-white shadow-md rounded-md flex-col border border-gray-200">
-            <div class="bg-gray-100 border-b p-3 font-bold text-center text-gray-700 flex justify-between items-center">
+            <div class="bg-[#4384bd] border-b p-3 font-bold text-center text-white flex justify-between items-center">
                 <span>Daftar Soal</span>
-                <button id="closePanelBtn" class="md:hidden text-gray-500 hover:text-red-500"><i class="fas fa-times"></i></button>
+                <button id="closePanelBtn" class="md:hidden text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-4 overflow-y-auto">
                 <div id="gridDaftarSoal" class="grid grid-cols-5 gap-2">
@@ -202,9 +447,9 @@
                 </div>
             </div>
             <div class="mt-auto p-3 border-t bg-gray-50 text-xs text-gray-600 flex flex-col gap-1">
-                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-white border border-gray-400"></div> Belum Dijawab</div>
-                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-blue-600"></div> Sudah Dijawab</div>
-                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-yellow-400"></div> Ragu-ragu</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-white border border-gray-400 rounded-sm"></div> Belum Dijawab</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-[#007bff] rounded-sm"></div> Sudah Dijawab</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-yellow-400 rounded-sm"></div> Ragu-ragu</div>
             </div>
         </div>
     </main>
@@ -212,19 +457,20 @@
     <!-- FOOTER NAVIGATION -->
     <footer id="footerUjian" class="hidden bg-white border-t p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] fixed bottom-0 w-full z-40">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
-            <button id="btnPrev" class="bg-gray-800 hover:bg-gray-700 text-white px-4 md:px-6 py-2 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <!-- Warna tombol soal sebelumnya diubah ke merah -->
+            <button id="btnPrev" class="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
                 <i class="fas fa-chevron-left"></i> <span class="hidden md:inline">Soal Sebelumnya</span>
             </button>
             <div class="flex items-center gap-4">
-                <label class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 md:px-6 py-2 rounded font-semibold text-sm md:text-base cursor-pointer flex items-center gap-2 transition-colors border border-yellow-500">
+                <label class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base cursor-pointer flex items-center gap-2 transition-colors border border-yellow-500 shadow-sm">
                     <input type="checkbox" id="chkRagu" class="w-4 h-4 cursor-pointer accent-gray-800">
                     <span>Ragu-ragu</span>
                 </label>
-                <button id="btnTogglePanel" class="md:hidden bg-white border border-gray-400 text-gray-700 px-3 py-2 rounded font-bold">
+                <button id="btnTogglePanel" class="md:hidden bg-white border border-gray-400 text-gray-700 px-3 py-2.5 rounded font-bold shadow-sm">
                     <i class="fas fa-th"></i>
                 </button>
             </div>
-            <button id="btnNext" class="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors">
+            <button id="btnNext" class="bg-[#007bff] hover:bg-blue-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors shadow-sm">
                 <span class="hidden md:inline" id="textNext">Soal Selanjutnya</span> <i class="fas fa-chevron-right" id="iconNext"></i>
             </button>
         </div>
@@ -232,40 +478,40 @@
 
     <!-- Overlay Konfirmasi Selesai -->
     <div id="modalSelesai" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-[60]">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2">Konfirmasi Selesai</h2>
-            <p class="mb-6 text-gray-700" id="modalSelesaiText">Apakah Anda yakin ingin menyelesaikan ujian ini?</p>
+        <div class="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-800">Konfirmasi Selesai</h2>
+            <p class="mb-6 text-gray-600 font-medium" id="modalSelesaiText">Apakah Anda yakin ingin menyelesaikan ujian ini?</p>
             <div class="flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 font-semibold">Batal</button>
-                <button onclick="submitUjian()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold">Ya, Selesai</button>
+                <button onclick="closeModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-bold transition-colors">Batal</button>
+                <button onclick="submitUjian()" class="px-5 py-2 bg-[#007bff] text-white rounded-lg hover:bg-blue-700 font-bold transition-colors">Ya, Selesai</button>
             </div>
         </div>
     </div>
 
     <!-- Papan Skor Sementara -->
     <div id="modalSkor" class="fixed inset-0 bg-black bg-opacity-80 hidden justify-center items-center z-[70]">
-        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4 text-center">
+        <div class="bg-white p-8 rounded-xl shadow-xl max-w-md w-full mx-4 text-center">
             <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-2">Ujian Selesai!</h2>
-            <p class="text-gray-700 mb-2">Terima kasih, <strong id="skorNamaSiswa" class="text-blue-600">-</strong> dari <strong id="skorAsalSekolah">-</strong>.</p>
+            <h2 class="text-2xl font-extrabold mb-2 text-gray-800">Ujian Selesai!</h2>
+            <p class="text-gray-600 font-medium mb-2">Terima kasih, <strong id="skorNamaSiswa" class="text-blue-600">-</strong> dari <strong id="skorAsalSekolah">-</strong>.</p>
             <p class="text-gray-500 mb-6 text-sm">Jawaban Anda telah terekam oleh sistem simulasi.</p>
-            <div class="bg-gray-100 p-4 rounded-lg mb-6">
-                <p class="text-sm text-gray-500 uppercase tracking-wide">Skor Akhir Anda</p>
-                <p class="text-5xl font-black text-blue-600" id="skorAkhir">0</p>
+            <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
+                <p class="text-sm text-blue-800 uppercase tracking-wide font-bold">Skor Akhir Anda</p>
+                <p class="text-6xl font-black text-[#007bff] mt-2" id="skorAkhir">0</p>
             </div>
-            <button onclick="location.reload()" class="w-full px-4 py-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700">Kembali ke Menu Utama</button>
+            <button onclick="location.reload()" class="w-full px-4 py-3 bg-gray-800 text-white rounded-lg font-bold hover:bg-gray-900 transition-colors">Kembali ke Beranda</button>
         </div>
     </div>
 
     <!-- Layar Loading -->
-    <div id="modalLoading" class="hidden fixed inset-0 bg-gray-100 z-[100] flex-col justify-center items-center transition-opacity duration-500">
-        <i class="fas fa-circle-notch fa-spin text-6xl text-blue-600 mb-6"></i>
-        <h2 class="text-2xl font-bold text-gray-800">Menyiapkan Ruang Ujian...</h2>
-        <p class="text-gray-500 mt-2 text-center max-w-md px-4" id="loadingText">Mengambil data soal dari server pusat.</p>
+    <div id="modalLoading" class="hidden fixed inset-0 bg-gray-50 z-[100] flex-col justify-center items-center transition-opacity duration-500">
+        <i class="fas fa-circle-notch fa-spin text-6xl text-[#007bff] mb-6"></i>
+        <h2 class="text-2xl font-extrabold text-gray-800">Menyiapkan Ruang Ujian...</h2>
+        <p class="text-gray-500 mt-2 text-center max-w-md px-4 font-medium" id="loadingText">Mengambil data soal dari server pusat.</p>
     </div>
 
     <script>
-        // --- 0. URL API TERBARU DARI DEPLOYMENT BARU ---
+        // --- 0. URL API TERBARU ---
         const API_URL = "https://script.google.com/macros/s/AKfycbw6hDCCDBUVxnlMuiqIiCWPS5OpqWAamq309rvUnGKlUWXkJuGJDiMLJBxWiXQTiemx/exec"; 
 
         let bankSoal = [];
@@ -273,8 +519,9 @@
         let totalWaktuDetik = 60 * 60; // 60 menit
         let timerInterval;
         let baseFontSize = 16;
-        let endTime = 0; // Tambahan: Mencatat waktu mutlak ujian selesai
-        let mataUjianAktif = ""; // Tambahan: Mencatat mapel yang sedang dikerjakan
+        let endTime = 0; 
+        let mataUjianAktif = ""; 
+        let currentToken = ""; // Variabel Penyimpan Token Aktif
 
         const elSoalNumber = document.getElementById('soalNumber');
         const elLabelKategori = document.getElementById('labelKategori');
@@ -289,9 +536,8 @@
         const panelDaftarSoal = document.getElementById('panelDaftarSoal');
         const modalLoading = document.getElementById('modalLoading');
 
-        // --- SISTEM LOGIN & SESI PENYIMPANAN ---
         const KUNCI_USER = "peserta_tka_smp";
-        const KUNCI_UJIAN_AKTIF = "ujian_berjalan_tka_smp"; // Tambahan: Kunci brankas jawaban sementara
+        const KUNCI_UJIAN_AKTIF = "ujian_berjalan_tka_smp"; 
         
         window.onload = function() {
             cekSesiUser();
@@ -301,44 +547,122 @@
             const dataUser = localStorage.getItem(KUNCI_USER);
             if(dataUser) {
                 const user = JSON.parse(dataUser);
-                document.getElementById('sapaanNama').innerText = user.nama;
-                document.getElementById('headerNamaSiswa').innerText = user.nama;
-                document.getElementById('headerAsalSekolah').innerText = user.sekolah;
+                document.getElementById('inputNama').value = user.nama;
+                document.getElementById('inputSekolah').value = user.sekolah;
+                if(user.jenjang) document.getElementById('inputJenjang').value = user.jenjang;
+                if(user.mapel) document.getElementById('inputMapel').value = user.mapel;
                 
-                document.getElementById('layarLogin').classList.add('hidden');
-                document.getElementById('layarMenu').classList.remove('hidden');
-                document.getElementById('layarMenu').classList.add('flex');
-            } else {
-                document.getElementById('layarLogin').classList.remove('hidden');
-                document.getElementById('layarMenu').classList.add('hidden');
-                document.getElementById('layarMenu').classList.remove('flex');
+                document.getElementById('headerNamaSiswa').innerText = user.nik ? `${user.nik} - ${user.nama.toUpperCase()}` : user.nama.toUpperCase();
+                document.getElementById('headerAsalSekolah').innerText = user.sekolah;
+                if(user.jenjang) document.getElementById('headerTeksJenjang').innerText = `Jenjang: ${user.jenjang}`;
             }
+            // Tampilkan Layar 1 saat reload halaman
+            document.getElementById('layarLogin').classList.remove('hidden');
+            document.getElementById('layarLogin').classList.add('flex');
+            document.getElementById('layarWelcome').classList.add('hidden');
+            document.getElementById('layarWelcome').classList.remove('flex');
+            document.getElementById('layarKonfirmasi').classList.add('hidden');
+            document.getElementById('layarKonfirmasi').classList.remove('flex');
         }
 
         function masukSistem() {
             const nama = document.getElementById('inputNama').value.trim();
             const sekolah = document.getElementById('inputSekolah').value.trim();
+            const jenjang = document.getElementById('inputJenjang').value;
+            const mapel = document.getElementById('inputMapel').value;
             const errorMsg = document.getElementById('errorLogin');
             
-            if(nama === "" || sekolah === "") {
+            if(nama === "" || sekolah === "" || jenjang === "" || mapel === "") {
                 errorMsg.classList.remove('hidden');
                 return;
             }
             errorMsg.classList.add('hidden');
             
-            const userData = { nama: nama, sekolah: sekolah };
+            // Simpan sementara datanya & Buat Dummy NIK (KODE UNIK)
+            const dummyNIK = "P" + Math.floor(100000000 + Math.random() * 900000000); 
+            const userData = { nama: nama, sekolah: sekolah, jenjang: jenjang, mapel: mapel, nik: dummyNIK };
             localStorage.setItem(KUNCI_USER, JSON.stringify(userData));
-            cekSesiUser();
+            
+            // Injeksi data ke Layar Selamat Datang
+            document.getElementById('welcomeNama').innerText = nama;
+            document.getElementById('welcomeSekolah').innerText = sekolah;
+            document.getElementById('welcomeMapel').innerText = mapel;
+
+            // Transisi ke Layar Selamat Datang
+            document.getElementById('layarLogin').classList.add('hidden');
+            document.getElementById('layarLogin').classList.remove('flex');
+            document.getElementById('layarWelcome').classList.remove('hidden');
+            document.getElementById('layarWelcome').classList.add('flex');
         }
 
-        function gantiAkun() {
-            localStorage.removeItem(KUNCI_USER);
-            document.getElementById('inputNama').value = "";
-            document.getElementById('inputSekolah').value = "";
-            cekSesiUser();
+        // --- SISTEM TOKEN (Layar 3) ---
+        function generateToken() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let token = '';
+            for (let i = 0; i < 6; i++) {
+                token += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentToken = token;
+            document.getElementById('displayToken').innerText = currentToken;
         }
 
-        // --- PENGACAK SOAL ---
+        function lanjutLogin() {
+            const userData = JSON.parse(localStorage.getItem(KUNCI_USER));
+            const mapel = userData.mapel;
+
+            // Set identitas di header ujian
+            document.getElementById('headerNamaSiswa').innerText = `${userData.nik} - ${userData.nama.toUpperCase()}`;
+            document.getElementById('headerAsalSekolah').innerText = userData.sekolah;
+            document.getElementById('headerTeksJenjang').innerText = `Jenjang: ${userData.jenjang}`;
+
+            // Siapkan Layar Konfirmasi
+            document.getElementById('headerKonfirmIdentitas').innerText = `${userData.nik} - ${userData.nama.toUpperCase()}`;
+            document.getElementById('konfirmNik').innerText = userData.nik;
+            document.getElementById('konfirmNamaLengkap').innerText = `${userData.nik} - ${userData.nama.toUpperCase()}`;
+            document.getElementById('konfirmMapel').innerText = mapel;
+            
+            // Reset form token & error msg
+            document.getElementById('konfirmTgl').value = "";
+            document.getElementById('konfirmBln').value = "";
+            document.getElementById('konfirmThn').value = "";
+            document.getElementById('konfirmInputToken').value = "";
+            document.getElementById('errorKonfirmasiMsg').classList.add('hidden');
+
+            generateToken(); // Buat Token Pertama Kali
+
+            // Sembunyikan layar welcome, buka layar konfirmasi
+            document.getElementById('layarWelcome').classList.add('hidden');
+            document.getElementById('layarWelcome').classList.remove('flex');
+            document.getElementById('layarKonfirmasi').classList.remove('hidden');
+            document.getElementById('layarKonfirmasi').classList.add('flex');
+        }
+
+        function submitKonfirmasi() {
+            const inputTgl = document.getElementById('konfirmTgl').value;
+            const inputBln = document.getElementById('konfirmBln').value;
+            const inputThn = document.getElementById('konfirmThn').value;
+            const inputToken = document.getElementById('konfirmInputToken').value.trim().toUpperCase();
+            
+            const errorMsg = document.getElementById('errorKonfirmasiMsg');
+
+            // Validasi psikologis (harus isi tanggal lahir + token benar)
+            if(inputTgl === "" || inputBln === "" || inputThn === "" || inputToken !== currentToken) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            
+            const userData = JSON.parse(localStorage.getItem(KUNCI_USER));
+            
+            // Tutup Layar Konfirmasi, Lanjut tarik soal
+            document.getElementById('layarKonfirmasi').classList.add('hidden');
+            document.getElementById('layarKonfirmasi').classList.remove('flex');
+
+            mulaiUjian(userData.mapel);
+        }
+
+        // --- SISTEM UJIAN INTI ---
         function acakSoal(array) {
             let curr = array.length, rand;
             while (curr !== 0) {
@@ -349,7 +673,6 @@
             return array;
         }
 
-        // --- FORMATTER DATA SHEET KE APLIKASI ---
         function formatDataSheet(arrayMentah, kategoriStr) {
             return arrayMentah.map((item, index) => {
                 let teksSoalTampil = '';
@@ -402,7 +725,6 @@
             });
         }
 
-        // --- FUNGSI TINTA PERMANEN ---
         function simpanSesiLokal() {
             if (bankSoal.length > 0) {
                 const dataSesi = {
@@ -415,21 +737,14 @@
         }
 
         async function mulaiUjian(mataUjian) {
-            document.getElementById('layarMenu').classList.add('hidden');
-            document.getElementById('layarMenu').classList.remove('flex');
-            
             document.getElementById('headerUjian').classList.remove('hidden');
             document.getElementById('mainUjian').classList.remove('hidden');
             document.getElementById('mainUjian').classList.add('flex');
             document.getElementById('footerUjian').classList.remove('hidden');
             
-            document.getElementById('judulUjian').innerText = "TKA - " + mataUjian.toUpperCase();
-
-            // --- CEK APAKAH ADA UJIAN YANG TERPUTUS ---
             const sesiTersimpan = localStorage.getItem(KUNCI_UJIAN_AKTIF);
             if (sesiTersimpan) {
                 const dataSesi = JSON.parse(sesiTersimpan);
-                // Jika mapelnya sama dan waktunya belum kadaluarsa
                 if (dataSesi.mataUjian === mataUjian) {
                     const sisaSisaDetik = Math.floor((dataSesi.endTime - Date.now()) / 1000);
                     if (sisaSisaDetik > 0) {
@@ -441,9 +756,8 @@
                         renderGridDaftarSoal();
                         tampilkanSoal(currentIndex);
                         mulaiTimer();
-                        return; // Langsung return, abaikan fetch data baru ke server
+                        return; 
                     } else {
-                        // Jika waktu sudah terlewat di background, hapus jejaknya
                         localStorage.removeItem(KUNCI_UJIAN_AKTIF);
                     }
                 }
@@ -452,28 +766,20 @@
             const modalLoading = document.getElementById('modalLoading');
             const loadingText = document.getElementById('loadingText');
             
-            // Tampilkan loading screen dengan flex saat mulai memuat data
             modalLoading.classList.remove('hidden');
             modalLoading.classList.add('flex');
             modalLoading.classList.remove('opacity-0');
             
             try {
-                if (!API_URL.startsWith("http")) {
-                    throw new Error("URL API belum dimasukkan ke dalam kode aplikasi.");
-                }
+                if (!API_URL.startsWith("http")) throw new Error("URL API belum dimasukkan.");
 
                 const response = await fetch(API_URL);
                 const resultJSON = await response.json();
 
-                if (resultJSON.status === "error") {
-                    throw new Error("Server Google Sheet: " + resultJSON.message);
-                }
+                if (resultJSON.status === "error") throw new Error("Server Google Sheet: " + resultJSON.message);
 
                 const rawData = resultJSON;
-
-                if (Array.isArray(rawData)) {
-                    throw new Error("Penerapan Apps Script masih membaca versi lama. Mohon pastikan sudah deploy dengan opsi 'Versi Baru'.");
-                }
+                if (Array.isArray(rawData)) throw new Error("Aplikasi masih membaca Apps Script versi lama.");
 
                 let mentahPG = [], mentahMCMA = [], mentahPGK = [];
                 
@@ -489,8 +795,6 @@
                 
                 const mentahSurvei = rawData.survei || [];
 
-                // LOGIKA CERDAS: Mengambil maksimal kuota (atau seadanya jika soal kurang dari kuota)
-                // Jadi, jika sheet hanya ada 1 baris, aplikasi TIDAK AKAN error.
                 const paketPG = acakSoal([...mentahPG]).slice(0, 15);
                 const paketMCMA = acakSoal([...mentahMCMA]).slice(0, 8);
                 const paketPGK = acakSoal([...mentahPGK]).slice(0, 7);
@@ -503,16 +807,12 @@
 
                 bankSoal = [...formatPG, ...formatMCMA, ...formatPGK, ...formatSurvei];
 
-                if(bankSoal.length === 0) {
-                    throw new Error("Data bank soal kosong. Pastikan sheet terisi minimal 1 baris soal pada tiap tab.");
-                }
+                if(bankSoal.length === 0) throw new Error("Data bank soal kosong.");
 
-                // Sistem Waktu Absolut (75 Menit dari detik ini)
                 endTime = Date.now() + (75 * 60 * 1000);
                 mataUjianAktif = mataUjian;
                 currentIndex = 0;
                 
-                // Simpan otomatis sebagai titik mulai
                 simpanSesiLokal();
 
                 modalLoading.classList.add('opacity-0');
@@ -530,9 +830,8 @@
                 let pesanError = "Gagal Terhubung ke Database!";
                 let detailError = error.message;
 
-                // FITUR PENGINGAT OTORISASI: Jika Error murni karena ditolak (Failed to fetch)
                 if (detailError.includes('Failed to fetch') || error.name === 'TypeError') {
-                    detailError = "Koneksi diblokir oleh sistem keamanan Google (CORS). Ini BUKAN karena jumlah soal Anda. Solusinya: Buka Tab Code.gs Anda > Pilih tulisan 'doGet' di atas > Klik tombol 'Jalankan/Run' > Berikan Izin/Otorisasi (Review Permissions) > Allow. Setelah itu Refresh halaman ini.";
+                    detailError = "Koneksi diblokir (CORS). Buka Tab Code.gs Anda > Pilih 'doGet' > Klik 'Jalankan/Run' > Berikan Otorisasi (Review Permissions). Setelah itu Refresh.";
                 }
 
                 loadingText.innerHTML = `
@@ -540,25 +839,24 @@
                     <span class="text-xs text-gray-600 bg-gray-200 px-3 py-2 rounded mt-2 block text-left border border-gray-300 leading-relaxed font-semibold">${detailError}</span><br>
                     <div class="mt-4 flex gap-2 justify-center">
                         <button onclick="location.reload()" class="px-4 py-2 bg-gray-600 text-white rounded font-bold hover:bg-gray-700 transition-colors shadow-md text-sm">Kembali</button>
-                        <button onclick="jalankanDataDummyLokal()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition-colors shadow-md text-sm">Pakai Data Dummy</button>
+                        <button onclick="jalankanDataDummyLokal()" class="px-4 py-2 bg-[#007bff] text-white rounded font-bold hover:bg-blue-700 transition-colors shadow-md text-sm">Pakai Data Dummy</button>
                     </div>
                 `;
                 
                 const iconLoad = document.querySelector('.fa-circle-notch');
                 if (iconLoad) {
                     iconLoad.classList.replace('fa-circle-notch', 'fa-exclamation-triangle');
-                    iconLoad.classList.replace('text-blue-600', 'text-red-600');
+                    iconLoad.classList.replace('text-[#007bff]', 'text-red-600');
                     iconLoad.classList.remove('fa-spin');
                 }
             }
         }
 
-        // --- FUNGSI DUMMY LOKAL AGAR BISA TETAP DIUJI ---
         function jalankanDataDummyLokal() {
             bankSoal = [
                 {
                     id: 1, kategori: "PG",
-                    teks: `<div class="text-justify font-semibold text-blue-600">Tipe: Pilihan Ganda Biasa</div><br><div class="text-justify">Soal ini adalah data dummy lokal karena gagal terhubung ke Sheet. Berapakah hasil dari 5 + 5?</div>`,
+                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Pilihan Ganda Biasa</div><div class="text-justify">Soal ini adalah data dummy lokal karena gagal terhubung ke Sheet. Berapakah hasil dari 5 + 5?</div>`,
                     opsi: ["8", "9", "10", "11"],
                     jawabanBenar: 2,
                     jawabanSiswa: null,
@@ -566,7 +864,7 @@
                 },
                 {
                     id: 2, kategori: "MCMA",
-                    teks: `<div class="text-justify font-semibold text-blue-600">Tipe: Pilihan Ganda Kompleks</div><br><div class="text-justify">Pilih semua opsi yang merupakan nama buah!</div>`,
+                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Pilihan Ganda Kompleks</div><div class="text-justify">Pilih semua opsi yang merupakan nama buah!</div>`,
                     opsi: ["Apel", "Bayam", "Jeruk", "Kangkung"],
                     jawabanBenar: [0, 2],
                     jawabanSiswa: [],
@@ -574,7 +872,7 @@
                 },
                 {
                     id: 3, kategori: "PGK",
-                    teks: `<div class="text-justify font-semibold text-blue-600">Tipe: Benar/Salah</div><br><div class="text-justify">Tentukan benar atau salah pernyataan di bawah ini:</div>`,
+                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Benar/Salah</div><div class="text-justify">Tentukan benar atau salah pernyataan di bawah ini:</div>`,
                     opsi: ["Bumi memiliki bentuk bulat.", "Matahari mengelilingi bulan."],
                     jawabanBenar: ['B', 'S'], 
                     jawabanSiswa: [null, null],
@@ -596,7 +894,6 @@
             }, 500);
         }
 
-        // --- RENDER SOAL BERDASARKAN KATEGORI ---
         function tampilkanSoal(index) {
             const soal = bankSoal[index];
             elSoalNumber.innerText = index + 1;
@@ -607,7 +904,7 @@
             elLabelKategori.innerText = labelTeks;
 
             const labels = ['A', 'B', 'C', 'D', 'E'];
-            let htmlOpsi = '<div class="mt-6 flex flex-col gap-3">';
+            let htmlOpsi = '<div class="mt-6 flex flex-col gap-3 font-medium">';
             
             if (soal.kategori === 'PG') {
                 soal.opsi.forEach((teksOpsi, idx) => {
@@ -626,7 +923,7 @@
                 });
             } 
             else if (soal.kategori === 'MCMA') {
-                htmlOpsi += `<div class="mb-2 text-sm text-blue-600 font-bold"><i class="fas fa-info-circle"></i> Pilih semua jawaban yang menurut Anda benar.</div>`;
+                htmlOpsi += `<div class="mb-2 text-sm text-[#007bff] font-bold"><i class="fas fa-info-circle"></i> Pilih semua jawaban yang menurut Anda benar.</div>`;
                 soal.opsi.forEach((teksOpsi, idx) => {
                     const isChecked = soal.jawabanSiswa.includes(idx) ? 'checked' : '';
                     htmlOpsi += `
@@ -643,12 +940,12 @@
                 });
             }
             else if (soal.kategori === 'PGK') {
-                htmlOpsi = `<div class="mt-6 border border-gray-200 rounded-lg overflow-hidden">
+                htmlOpsi = `<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden">
                     <table class="w-full text-left text-sm md:text-base">
                         <thead class="bg-gray-100 border-b">
                             <tr>
-                                <th class="p-3 w-8 md:w-12 text-center">No</th>
-                                <th class="p-3 border-l">Pernyataan</th>
+                                <th class="p-3 w-8 md:w-12 text-center text-gray-600">No</th>
+                                <th class="p-3 border-l text-gray-600">Pernyataan</th>
                                 <th class="p-3 w-20 text-center border-l bg-green-50 text-green-700">Benar</th>
                                 <th class="p-3 w-20 text-center border-l bg-red-50 text-red-700">Salah</th>
                             </tr>
@@ -661,8 +958,8 @@
                     
                     htmlOpsi += `
                         <tr class="hover:bg-gray-50">
-                            <td class="p-3 text-center font-bold text-gray-500">${idx + 1}</td>
-                            <td class="p-3 border-l text-gray-800">${teksOpsi}</td>
+                            <td class="p-3 text-center font-bold text-gray-400">${idx + 1}</td>
+                            <td class="p-3 border-l text-gray-800 font-medium">${teksOpsi}</td>
                             <td class="p-2 border-l text-center align-middle">
                                 <label class="cursor-pointer block">
                                     <input type="radio" name="pgk_${index}_${idx}" class="pgk-radio hidden" onchange="pilihPGK(${idx}, 'B')" ${isBenar}>
@@ -690,36 +987,22 @@
             if (index === bankSoal.length - 1) {
                 textNext.innerText = "Selesai Ujian";
                 textNext.classList.remove('hidden');
-                btnNext.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btnNext.classList.remove('bg-[#007bff]', 'hover:bg-blue-700');
                 btnNext.classList.add('bg-green-600', 'hover:bg-green-700');
                 iconNext.className = "fas fa-check";
             } else {
                 textNext.innerText = "Soal Selanjutnya";
                 textNext.classList.add('hidden', 'md:inline'); 
-                btnNext.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                btnNext.classList.add('bg-[#007bff]', 'hover:bg-blue-700');
                 btnNext.classList.remove('bg-green-600', 'hover:bg-green-700');
                 iconNext.className = "fas fa-chevron-right";
             }
             updateGridActiveState();
         }
 
-        // --- HANDLER JAWABAN (3 JENIS) ---
-        function cekStatusTerjawab() {
-            const soal = bankSoal[currentIndex];
-            let terjawab = false;
-            if(soal.kategori === 'PG') {
-                terjawab = soal.jawabanSiswa !== null;
-            } else if(soal.kategori === 'MCMA') {
-                terjawab = soal.jawabanSiswa.length > 0;
-            } else if(soal.kategori === 'PGK') {
-                terjawab = soal.jawabanSiswa.some(jwb => jwb !== null); 
-            }
-            return terjawab;
-        }
-
         function pilihPG(idxPilihan) {
             bankSoal[currentIndex].jawabanSiswa = idxPilihan;
-            simpanSesiLokal(); // Rekam langsung
+            simpanSesiLokal(); 
             renderGridDaftarSoal();
         }
 
@@ -731,23 +1014,22 @@
                 arr = arr.filter(i => i !== idxPilihan);
             }
             bankSoal[currentIndex].jawabanSiswa = arr;
-            simpanSesiLokal(); // Rekam langsung
+            simpanSesiLokal(); 
             renderGridDaftarSoal();
         }
 
         function pilihPGK(idxBaris, B_atau_S) {
             bankSoal[currentIndex].jawabanSiswa[idxBaris] = B_atau_S;
-            simpanSesiLokal(); // Rekam langsung
+            simpanSesiLokal(); 
             renderGridDaftarSoal();
         }
 
         chkRagu.addEventListener('change', function() {
             bankSoal[currentIndex].ragu = this.checked;
-            simpanSesiLokal(); // Rekam langsung
+            simpanSesiLokal(); 
             renderGridDaftarSoal();
         });
 
-        // --- NAVIGASI ---
         btnPrev.addEventListener('click', () => {
             if (currentIndex > 0) { currentIndex--; tampilkanSoal(currentIndex); }
         });
@@ -756,22 +1038,21 @@
             else { bukaModalSelesai(); }
         });
 
-        // --- GRID DAFTAR SOAL ---
         function renderGridDaftarSoal() {
             elGridDaftarSoal.innerHTML = '';
             bankSoal.forEach((soal, idx) => {
                 const btn = document.createElement('button');
                 btn.innerText = idx + 1;
-                btn.className = `w-full aspect-square flex items-center justify-center rounded font-bold text-sm border-2 transition-all`;
+                btn.className = `w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm border-2 transition-all`;
                 
                 let isDijawab = false;
                 if(soal.kategori === 'PG') isDijawab = soal.jawabanSiswa !== null;
                 else if(soal.kategori === 'MCMA') isDijawab = soal.jawabanSiswa.length > 0;
                 else if(soal.kategori === 'PGK') isDijawab = !soal.jawabanSiswa.includes(null);
 
-                if (soal.ragu) btn.classList.add('bg-yellow-400', 'border-yellow-500', 'text-black');
-                else if (isDijawab) btn.classList.add('bg-blue-600', 'border-blue-700', 'text-white');
-                else btn.classList.add('bg-white', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-100');
+                if (soal.ragu) btn.classList.add('bg-yellow-400', 'border-yellow-500', 'text-gray-900');
+                else if (isDijawab) btn.classList.add('bg-[#007bff]', 'border-blue-600', 'text-white');
+                else btn.classList.add('bg-white', 'border-gray-300', 'text-gray-600', 'hover:bg-gray-100');
 
                 btn.onclick = () => {
                     currentIndex = idx;
@@ -791,7 +1072,6 @@
             });
         }
 
-        // --- LAIN-LAIN ---
         function changeFontSize(step) {
             if (step === 0) baseFontSize = 16;
             else {
@@ -809,9 +1089,8 @@
         document.getElementById('closePanelBtn').addEventListener('click', () => { panelDaftarSoal.classList.add('hidden'); });
 
         function mulaiTimer() {
-            clearInterval(timerInterval); // Bersihkan sisa timer lama jika ada
+            clearInterval(timerInterval); 
             timerInterval = setInterval(() => {
-                // Hitung dari selisih waktu mutlak
                 totalWaktuDetik = Math.floor((endTime - Date.now()) / 1000);
 
                 if (totalWaktuDetik <= 0) {
@@ -826,7 +1105,9 @@
                 timerDisplay.innerText = String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
                 
                 if(totalWaktuDetik > 0 && totalWaktuDetik < 300) {
-                    timerDisplay.parentElement.classList.replace('bg-red-600', 'bg-red-700');
+                    timerDisplay.parentElement.classList.replace('bg-white', 'bg-red-50');
+                    timerDisplay.parentElement.classList.replace('border-gray-400', 'border-red-500');
+                    timerDisplay.classList.replace('text-gray-800', 'text-red-700');
                     timerDisplay.parentElement.classList.add('animate-pulse');
                 }
             }, 1000);
@@ -857,20 +1138,17 @@
         function submitUjian() { clearInterval(timerInterval); closeModal(); hitungSkor(); }
 
         function hitungSkor() {
-            // Hapus riwayat putus sinyal agar anak bisa ganti mapel lain
             localStorage.removeItem(KUNCI_UJIAN_AKTIF); 
 
             let poinTotal = 0;
             let jumlahSoalDinilai = 0;
 
             bankSoal.forEach(soal => {
-                // Abaikan Survei Lingkungan dari perhitungan skor akhir
                 if (soal.isSurvei) return;
 
                 jumlahSoalDinilai++;
 
                 if(soal.kategori === 'PG') {
-                    // Mencegah poin gratis jika kunci kosong di Sheet atau siswa tidak menjawab
                     if(soal.jawabanBenar !== null && soal.jawabanSiswa !== null && soal.jawabanSiswa === soal.jawabanBenar) {
                         poinTotal += 1;
                     }
@@ -889,7 +1167,6 @@
                 }
             });
             
-            // Rumus baru: Poin hanya dibagi berdasarkan soal yang murni dinilai (tanpa Survei)
             let nilaiAkhir = jumlahSoalDinilai > 0 ? (poinTotal / jumlahSoalDinilai) * 100 : 0;
             
             const dataUser = JSON.parse(localStorage.getItem(KUNCI_USER));
@@ -901,41 +1178,27 @@
             document.getElementById('modalSkor').classList.add('flex');
         }
 
-        // --- SISTEM INJEKSI PWA OTOMATIS (MANDIRI 1 FILE) ---
-        // Membuat Manifest JSON
+        // --- SISTEM INJEKSI PWA ---
         const manifestData = {
             "name": "Simulasi TKA SMP",
             "short_name": "TKA SMP",
             "start_url": ".",
             "display": "standalone",
             "background_color": "#e5e7eb",
-            "theme_color": "#0f172a",
+            "theme_color": "#4384bd",
             "icons": [
-                {
-                    "src": "simulasitka.png",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "simulasitka.png",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
+                { "src": "simulasitka.png", "sizes": "192x192", "type": "image/png" },
+                { "src": "simulasitka.png", "sizes": "512x512", "type": "image/png" }
             ]
         };
         const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
         document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
-        // Mendaftarkan Service Worker
         if ('serviceWorker' in navigator) {
             const swCode = `
-                self.addEventListener('install', (e) => {
-                    self.skipWaiting();
-                });
+                self.addEventListener('install', (e) => { self.skipWaiting(); });
                 self.addEventListener('fetch', (e) => {
-                    e.respondWith(
-                        fetch(e.request).catch(() => caches.match(e.request))
-                    );
+                    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
                 });
             `;
             const swBlob = new Blob([swCode], {type: 'application/javascript'});
