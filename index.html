@@ -389,6 +389,7 @@
                 return {
                     id: item.No || index + 1,
                     kategori: kategoriStr === 'Survei' ? 'PG' : kategoriStr, 
+                    isSurvei: kategoriStr === 'Survei',
                     teks: teksSoalTampil,
                     opsi: opsiArr,
                     jawabanBenar: jwbBenar,
@@ -412,6 +413,7 @@
             const modalLoading = document.getElementById('modalLoading');
             const loadingText = document.getElementById('loadingText');
             
+            // Tampilkan loading screen dengan flex saat mulai memuat data
             modalLoading.classList.remove('hidden');
             modalLoading.classList.add('flex');
             modalLoading.classList.remove('opacity-0');
@@ -804,21 +806,36 @@
 
         function hitungSkor() {
             let poinTotal = 0;
+            let jumlahSoalDinilai = 0;
+
             bankSoal.forEach(soal => {
+                // Abaikan Survei Lingkungan dari perhitungan skor akhir
+                if (soal.isSurvei) return;
+
+                jumlahSoalDinilai++;
+
                 if(soal.kategori === 'PG') {
-                    if(soal.jawabanSiswa === soal.jawabanBenar) poinTotal += 1;
+                    // Mencegah poin gratis jika kunci kosong di Sheet atau siswa tidak menjawab
+                    if(soal.jawabanBenar !== null && soal.jawabanSiswa !== null && soal.jawabanSiswa === soal.jawabanBenar) {
+                        poinTotal += 1;
+                    }
                 } 
                 else if(soal.kategori === 'MCMA') {
-                    const jwbBenarArr = [...soal.jawabanBenar].sort();
-                    const jwbSiswaArr = [...soal.jawabanSiswa].sort();
-                    if(JSON.stringify(jwbBenarArr) === JSON.stringify(jwbSiswaArr)) poinTotal += 1;
+                    if(soal.jawabanBenar && soal.jawabanBenar.length > 0) {
+                        const jwbBenarArr = [...soal.jawabanBenar].sort();
+                        const jwbSiswaArr = [...soal.jawabanSiswa].sort();
+                        if(JSON.stringify(jwbBenarArr) === JSON.stringify(jwbSiswaArr)) poinTotal += 1;
+                    }
                 }
                 else if(soal.kategori === 'PGK') {
-                    if(JSON.stringify(soal.jawabanSiswa) === JSON.stringify(soal.jawabanBenar)) poinTotal += 1;
+                    if(soal.jawabanBenar && soal.jawabanBenar.length > 0 && soal.jawabanBenar[0] !== '') {
+                        if(JSON.stringify(soal.jawabanSiswa) === JSON.stringify(soal.jawabanBenar)) poinTotal += 1;
+                    }
                 }
             });
             
-            let nilaiAkhir = (poinTotal / bankSoal.length) * 100;
+            // Rumus baru: Poin hanya dibagi berdasarkan soal yang murni dinilai (tanpa Survei)
+            let nilaiAkhir = jumlahSoalDinilai > 0 ? (poinTotal / jumlahSoalDinilai) * 100 : 0;
             
             const dataUser = JSON.parse(localStorage.getItem(KUNCI_USER));
             document.getElementById('skorNamaSiswa').innerText = dataUser ? dataUser.nama : 'Siswa';
