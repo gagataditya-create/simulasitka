@@ -265,8 +265,8 @@
     </div>
 
     <script>
-        // --- URL API TERBARU DARI SCREENSHOT BAPAK ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbwSmhV_Nl7plohTeN7BD1L3LrBg8uvNqECSqlFpI18fxqLRGGhbpVf4TMRq5pJbgrRG/exec"; 
+        // --- 0. URL API TERBARU DARI DEPLOYMENT BARU ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbw6hDCCDBUVxnlMuiqIiCWPS5OpqWAamq309rvUnGKlUWXkJuGJDiMLJBxWiXQTiemx/exec"; 
 
         let bankSoal = [];
         let currentIndex = 0;
@@ -412,29 +412,26 @@
             const modalLoading = document.getElementById('modalLoading');
             const loadingText = document.getElementById('loadingText');
             
-            // Tampilkan loading screen dengan flex saat mulai memuat data
             modalLoading.classList.remove('hidden');
             modalLoading.classList.add('flex');
             modalLoading.classList.remove('opacity-0');
             
             try {
-                // Perbaikan: Menggunakan Kurir Proxy (AllOrigins) untuk menembus satpam Canvas
-                let rawData;
-                try {
-                    const response = await fetch(API_URL);
-                    rawData = await response.json();
-                } catch (e) {
-                    console.log("Jalur normal diblokir Canvas, memanggil kurir Proxy...");
-                    const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(API_URL);
-                    const proxyResponse = await fetch(proxyUrl);
-                    const proxyJson = await proxyResponse.json();
-                    
-                    if(!proxyJson.contents) throw new Error("Gagal mengambil data dari Google Script.");
-                    rawData = JSON.parse(proxyJson.contents);
+                if (!API_URL.startsWith("http")) {
+                    throw new Error("URL API belum dimasukkan ke dalam kode aplikasi.");
                 }
 
+                const response = await fetch(API_URL);
+                const resultJSON = await response.json();
+
+                if (resultJSON.status === "error") {
+                    throw new Error("Server Google Sheet: " + resultJSON.message);
+                }
+
+                const rawData = resultJSON;
+
                 if (Array.isArray(rawData)) {
-                    throw new Error("Penerapan (Deploy) Apps Script masih membaca versi lama. Mohon deploy ulang dengan memilih opsi 'Versi Baru'.");
+                    throw new Error("Penerapan Apps Script masih membaca versi lama. Mohon pastikan sudah deploy dengan opsi 'Versi Baru'.");
                 }
 
                 let mentahPG = [], mentahMCMA = [], mentahPGK = [];
@@ -451,10 +448,12 @@
                 
                 const mentahSurvei = rawData.survei || [];
 
-                const paketPG = acakSoal(mentahPG).slice(0, 15);
-                const paketMCMA = acakSoal(mentahMCMA).slice(0, 8);
-                const paketPGK = acakSoal(mentahPGK).slice(0, 7);
-                const paketSurvei = acakSoal(mentahSurvei).slice(0, 10);
+                // LOGIKA CERDAS: Mengambil maksimal kuota (atau seadanya jika soal kurang dari kuota)
+                // Jadi, jika sheet hanya ada 1 baris, aplikasi TIDAK AKAN error.
+                const paketPG = acakSoal([...mentahPG]).slice(0, 15);
+                const paketMCMA = acakSoal([...mentahMCMA]).slice(0, 8);
+                const paketPGK = acakSoal([...mentahPGK]).slice(0, 7);
+                const paketSurvei = acakSoal([...mentahSurvei]).slice(0, 10);
 
                 const formatPG = formatDataSheet(paketPG, 'PG');
                 const formatMCMA = formatDataSheet(paketMCMA, 'MCMA');
@@ -472,7 +471,6 @@
 
                 modalLoading.classList.add('opacity-0');
                 setTimeout(() => {
-                    // Sembunyikan loading screen setelah berhasil
                     modalLoading.classList.remove('flex');
                     modalLoading.classList.add('hidden');
                     renderGridDaftarSoal();
@@ -481,21 +479,19 @@
                 }, 500);
 
             } catch (error) {
-                console.log("Membaca mekanisme fallback error koneksi...");
+                console.error("Gagal menarik data:", error);
                 
                 let pesanError = "Gagal Terhubung ke Database!";
                 let detailError = error.message;
 
-                // Mendeteksi error Failed to fetch (biasanya karena masalah CORS/Akses)
+                // FITUR PENGINGAT OTORISASI: Jika Error murni karena ditolak (Failed to fetch)
                 if (detailError.includes('Failed to fetch') || error.name === 'TypeError') {
-                    detailError = "Akses ditolak (Failed to fetch). Pastikan saat Deploy Apps Script, opsi 'Siapa saja yang memiliki akses' diatur ke 'Siapa saja' (Anyone).";
-                } else if (error.name === 'SyntaxError') {
-                    detailError = "Format data salah (CORS). Pastikan URL Web App diatur ke 'Siapa saja' (Anyone).";
+                    detailError = "Koneksi diblokir oleh sistem keamanan Google (CORS). Ini BUKAN karena jumlah soal Anda. Solusinya: Buka Tab Code.gs Anda > Pilih tulisan 'doGet' di atas > Klik tombol 'Jalankan/Run' > Berikan Izin/Otorisasi (Review Permissions) > Allow. Setelah itu Refresh halaman ini.";
                 }
 
                 loadingText.innerHTML = `
                     <span class='text-red-600 font-bold'>${pesanError}</span><br>
-                    <span class="text-xs text-gray-600 bg-gray-200 px-2 py-1 rounded mt-2 inline-block">${detailError}</span><br>
+                    <span class="text-xs text-gray-600 bg-gray-200 px-3 py-2 rounded mt-2 block text-left border border-gray-300 leading-relaxed font-semibold">${detailError}</span><br>
                     <div class="mt-4 flex gap-2 justify-center">
                         <button onclick="location.reload()" class="px-4 py-2 bg-gray-600 text-white rounded font-bold hover:bg-gray-700 transition-colors shadow-md text-sm">Kembali</button>
                         <button onclick="jalankanDataDummyLokal()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition-colors shadow-md text-sm">Pakai Data Dummy</button>
