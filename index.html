@@ -273,6 +273,8 @@
         let totalWaktuDetik = 60 * 60; // 60 menit
         let timerInterval;
         let baseFontSize = 16;
+        let endTime = 0; // Tambahan: Mencatat waktu mutlak ujian selesai
+        let mataUjianAktif = ""; // Tambahan: Mencatat mapel yang sedang dikerjakan
 
         const elSoalNumber = document.getElementById('soalNumber');
         const elLabelKategori = document.getElementById('labelKategori');
@@ -289,6 +291,7 @@
 
         // --- SISTEM LOGIN & SESI PENYIMPANAN ---
         const KUNCI_USER = "peserta_tka_smp";
+        const KUNCI_UJIAN_AKTIF = "ujian_berjalan_tka_smp"; // Tambahan: Kunci brankas jawaban sementara
         
         window.onload = function() {
             cekSesiUser();
@@ -399,6 +402,18 @@
             });
         }
 
+        // --- FUNGSI TINTA PERMANEN ---
+        function simpanSesiLokal() {
+            if (bankSoal.length > 0) {
+                const dataSesi = {
+                    mataUjian: mataUjianAktif,
+                    bankSoal: bankSoal,
+                    endTime: endTime
+                };
+                localStorage.setItem(KUNCI_UJIAN_AKTIF, JSON.stringify(dataSesi));
+            }
+        }
+
         async function mulaiUjian(mataUjian) {
             document.getElementById('layarMenu').classList.add('hidden');
             document.getElementById('layarMenu').classList.remove('flex');
@@ -409,6 +424,30 @@
             document.getElementById('footerUjian').classList.remove('hidden');
             
             document.getElementById('judulUjian').innerText = "TKA - " + mataUjian.toUpperCase();
+
+            // --- CEK APAKAH ADA UJIAN YANG TERPUTUS ---
+            const sesiTersimpan = localStorage.getItem(KUNCI_UJIAN_AKTIF);
+            if (sesiTersimpan) {
+                const dataSesi = JSON.parse(sesiTersimpan);
+                // Jika mapelnya sama dan waktunya belum kadaluarsa
+                if (dataSesi.mataUjian === mataUjian) {
+                    const sisaSisaDetik = Math.floor((dataSesi.endTime - Date.now()) / 1000);
+                    if (sisaSisaDetik > 0) {
+                        bankSoal = dataSesi.bankSoal;
+                        endTime = dataSesi.endTime;
+                        mataUjianAktif = dataSesi.mataUjian;
+                        currentIndex = 0;
+                        
+                        renderGridDaftarSoal();
+                        tampilkanSoal(currentIndex);
+                        mulaiTimer();
+                        return; // Langsung return, abaikan fetch data baru ke server
+                    } else {
+                        // Jika waktu sudah terlewat di background, hapus jejaknya
+                        localStorage.removeItem(KUNCI_UJIAN_AKTIF);
+                    }
+                }
+            }
 
             const modalLoading = document.getElementById('modalLoading');
             const loadingText = document.getElementById('loadingText');
@@ -468,8 +507,13 @@
                     throw new Error("Data bank soal kosong. Pastikan sheet terisi minimal 1 baris soal pada tiap tab.");
                 }
 
-                totalWaktuDetik = 75 * 60;
+                // Sistem Waktu Absolut (75 Menit dari detik ini)
+                endTime = Date.now() + (75 * 60 * 1000);
+                mataUjianAktif = mataUjian;
                 currentIndex = 0;
+                
+                // Simpan otomatis sebagai titik mulai
+                simpanSesiLokal();
 
                 modalLoading.classList.add('opacity-0');
                 setTimeout(() => {
@@ -675,6 +719,7 @@
 
         function pilihPG(idxPilihan) {
             bankSoal[currentIndex].jawabanSiswa = idxPilihan;
+            simpanSesiLokal(); // Rekam langsung
             renderGridDaftarSoal();
         }
 
@@ -686,16 +731,19 @@
                 arr = arr.filter(i => i !== idxPilihan);
             }
             bankSoal[currentIndex].jawabanSiswa = arr;
+            simpanSesiLokal(); // Rekam langsung
             renderGridDaftarSoal();
         }
 
         function pilihPGK(idxBaris, B_atau_S) {
             bankSoal[currentIndex].jawabanSiswa[idxBaris] = B_atau_S;
+            simpanSesiLokal(); // Rekam langsung
             renderGridDaftarSoal();
         }
 
         chkRagu.addEventListener('change', function() {
             bankSoal[currentIndex].ragu = this.checked;
+            simpanSesiLokal(); // Rekam langsung
             renderGridDaftarSoal();
         });
 
@@ -761,19 +809,23 @@
         document.getElementById('closePanelBtn').addEventListener('click', () => { panelDaftarSoal.classList.add('hidden'); });
 
         function mulaiTimer() {
+            clearInterval(timerInterval); // Bersihkan sisa timer lama jika ada
             timerInterval = setInterval(() => {
+                // Hitung dari selisih waktu mutlak
+                totalWaktuDetik = Math.floor((endTime - Date.now()) / 1000);
+
                 if (totalWaktuDetik <= 0) {
                     clearInterval(timerInterval);
+                    totalWaktuDetik = 0;
                     submitUjianForce();
-                    return;
                 }
-                totalWaktuDetik--;
+                
                 const jam = Math.floor(totalWaktuDetik / 3600);
                 const menit = Math.floor((totalWaktuDetik % 3600) / 60);
                 const detik = totalWaktuDetik % 60;
                 timerDisplay.innerText = String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
                 
-                if(totalWaktuDetik < 300) {
+                if(totalWaktuDetik > 0 && totalWaktuDetik < 300) {
                     timerDisplay.parentElement.classList.replace('bg-red-600', 'bg-red-700');
                     timerDisplay.parentElement.classList.add('animate-pulse');
                 }
@@ -805,6 +857,9 @@
         function submitUjian() { clearInterval(timerInterval); closeModal(); hitungSkor(); }
 
         function hitungSkor() {
+            // Hapus riwayat putus sinyal agar anak bisa ganti mapel lain
+            localStorage.removeItem(KUNCI_UJIAN_AKTIF); 
+
             let poinTotal = 0;
             let jumlahSoalDinilai = 0;
 
