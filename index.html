@@ -1180,33 +1180,39 @@
                 if (soal.isSurvei) return;
 
                 jumlahSoalDinilai++;
+                let isCorrect = false;
 
                 if(soal.kategori === 'PG') {
                     if(soal.jawabanBenar !== null && soal.jawabanSiswa !== null && soal.jawabanSiswa === soal.jawabanBenar) {
-                        poinTotal += 1;
+                        isCorrect = true;
                     }
                 } 
                 else if(soal.kategori === 'MCMA') {
                     if(soal.jawabanBenar && soal.jawabanBenar.length > 0) {
-                        const jwbBenarArr = [...soal.jawabanBenar].sort();
-                        const jwbSiswaArr = [...soal.jawabanSiswa].sort();
-                        if(JSON.stringify(jwbBenarArr) === JSON.stringify(jwbSiswaArr)) poinTotal += 1;
+                        const jwbBenarStr = JSON.stringify([...soal.jawabanBenar].sort());
+                        const jwbSiswaStr = JSON.stringify([...soal.jawabanSiswa].sort());
+                        if(jwbBenarStr === jwbSiswaStr) isCorrect = true;
                     }
                 }
                 else if(soal.kategori === 'PGK') {
                     if(soal.jawabanBenar && soal.jawabanBenar.length > 0 && soal.jawabanBenar[0] !== '') {
-                        if(JSON.stringify(soal.jawabanSiswa) === JSON.stringify(soal.jawabanBenar)) poinTotal += 1;
+                        const jwbBenarStr = JSON.stringify(soal.jawabanBenar);
+                        const jwbSiswaStr = JSON.stringify(soal.jawabanSiswa);
+                        if(jwbBenarStr === jwbSiswaStr) isCorrect = true;
                     }
                 }
+
+                if (isCorrect) poinTotal++;
             });
             
             let nilaiAkhir = jumlahSoalDinilai > 0 ? (poinTotal / jumlahSoalDinilai) * 100 : 0;
+            nilaiAkhir = Math.round(nilaiAkhir);
             
             const dataUser = JSON.parse(localStorage.getItem(KUNCI_USER));
             document.getElementById('skorNamaSiswa').innerText = dataUser ? dataUser.nama : 'Siswa';
             document.getElementById('skorAsalSekolah').innerText = dataUser ? dataUser.sekolah : '-';
 
-            document.getElementById('skorAkhir').innerText = Math.round(nilaiAkhir);
+            document.getElementById('skorAkhir').innerText = nilaiAkhir;
             document.getElementById('modalSkor').classList.remove('hidden');
             document.getElementById('modalSkor').classList.add('flex');
         }
@@ -1241,27 +1247,27 @@
                 // Gambar background template
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // 1. Nama Peserta (X: 50%, Y: 48% | Rata Tengah)
+                // 1. Nama Peserta (X: 50%, Y: 52% | Rata Tengah | Turun Sedikit)
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const fontSizeNama = Math.floor(canvas.height * 0.05); // Proporsional 5% dari tinggi
                 ctx.font = `bold ${fontSizeNama}px 'Times New Roman', serif`;
-                ctx.fillStyle = '#0f172a'; // Biru gelap elegan
-                ctx.fillText(nama, canvas.width * 0.50, canvas.height * 0.48);
+                ctx.fillStyle = '#334155'; // Biru tua sedikit keabu-abuan (slate-700) agar membaur
+                ctx.fillText(nama, canvas.width * 0.50, canvas.height * 0.52);
 
-                // 2. Mata Ujian (X: 32%, Y: 71% | Rata Kiri)
+                // 2. Mata Ujian (X: 32%, Y: 71% | Rata Kiri | Diperbesar)
                 ctx.textAlign = 'left';
-                const fontSizeMapel = Math.floor(canvas.height * 0.025);
+                const fontSizeMapel = Math.floor(canvas.height * 0.030); // Diperbesar dari 0.025
                 ctx.font = `bold ${fontSizeMapel}px 'Montserrat', sans-serif`;
                 ctx.fillStyle = '#000000';
                 ctx.fillText(mapel, canvas.width * 0.32, canvas.height * 0.71);
 
-                // 3. Perolehan Skor (X: 38%, Y: 78% | Rata Kiri)
+                // 3. Perolehan Skor (X: 41%, Y: 78% | Rata Kiri | Digeser ke kanan ~3 spasi)
                 ctx.textAlign = 'left';
                 const fontSizeSkor = Math.floor(canvas.height * 0.035);
                 ctx.font = `bold ${fontSizeSkor}px 'Montserrat', sans-serif`;
                 ctx.fillStyle = '#000000';
-                ctx.fillText(skor, canvas.width * 0.38, canvas.height * 0.78);
+                ctx.fillText(skor, canvas.width * 0.41, canvas.height * 0.78);
 
                 // 4. Nomor Sertifikat / Kode Unik (X: 95%, Y: 12% | Rata Kanan)
                 ctx.textAlign = 'right';
