@@ -6,7 +6,7 @@
     <title>Simulasi CBT TKA SMP</title>
     
     <!-- PWA Meta Tags & Favicon -->
-    <meta name="theme-color" content="#4384bd">
+    <meta name="theme-color" content="#2870b4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="simulasitka.png">
@@ -76,9 +76,15 @@
             transform: scale(1.05);
         }
 
-       /* --- TEMA SISMENDIK --- */
+        /* --- TEMA SISMENDIK --- */
+        .bg-sismendik-dots {
+            background-color: #2870b4;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
         .bg-sismendik-motif {
-            background-color: #2870b4; /* Warna biru laut cerah khas resmi */
+            background-color: #2870b4;
             position: relative;
             overflow: hidden;
         }
@@ -87,18 +93,18 @@
         .bg-sismendik-motif::before {
             content: '';
             position: absolute;
-            top: -50%; right: -10%;
+            top: -50%; right: -10%; left: auto;
             width: 80%; height: 200%;
-            background: rgba(0, 0, 0, 0.05); /* Motif bayangan gelap diagonal */
+            background: rgba(0, 0, 0, 0.05);
             transform: rotate(25deg);
             pointer-events: none;
         }
         .bg-sismendik-motif::after {
             content: '';
             position: absolute;
-            top: -10%; left: -20%;
+            top: -10%; left: -20%; right: auto;
             width: 60%; height: 150%;
-            background: rgba(255, 255, 255, 0.05); /* Motif cahaya terang diagonal */
+            background: rgba(255, 255, 255, 0.05);
             transform: rotate(-15deg);
             pointer-events: none;
         }
@@ -158,30 +164,42 @@
         .animate-fade-in {
             animation: fadeInSmooth 0.4s ease-out forwards;
         }
+
+        /* Animasi Toga Naik Turun */
+        @keyframes floatToga {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float-toga {
+            animation: floatToga 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col select-none" style="font-family: 'Montserrat', sans-serif;">
 
     <!-- LAYAR 1: LOGIN PESERTA (Pos Satpam) -->
-    <div id="layarLogin" class="flex-1 flex flex-col min-h-screen bg-gray-50 relative">
-        <!-- Top Half Blue Motif (Seragam dengan halaman 2 & 3) -->
-        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-sismendik-motif z-0 shadow-md">
-            <!-- Header Bar -->
-            <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
-                <div class="bg-white rounded-full p-1 shadow-md">
-                    <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                    <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
-                </div>
-                <div>
-                    <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
-                    <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK - Simulasi TKA</p>
+    <div id="layarLogin" class="flex-1 flex flex-col min-h-screen bg-sismendik-dots relative">
+        <!-- Header Bar Polos Centered -->
+        <div class="w-full bg-[#2870b4] flex justify-center items-center py-6 shadow-md relative z-20">
+            <div class="flex items-center gap-4 text-white">
+                <img src="simulasitka.png" alt="Logo" class="w-12 h-12 md:w-14 md:h-14 object-contain" onerror="this.style.display='none';">
+                <div class="text-left">
+                    <h1 class="font-extrabold text-xl md:text-2xl leading-tight">SISMENDIK</h1>
+                    <p class="text-[10px] md:text-[11px] opacity-90 uppercase">Aplikasi ANBK - Simulasi TKA</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 mt-16 md:mt-12">
+        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 mt-4 md:mt-8">
             <!-- Box Popup diberi Animasi Drop Down -->
             <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] max-w-md w-full border border-gray-100 animate-drop-down">
+                
+                <!-- Icon Toga Animasi Naik Turun -->
+                <div class="w-20 h-20 bg-[#2870b4] rounded-full mx-auto flex items-center justify-center animate-float-toga mb-6 shadow-md border-4 border-white ring-4 ring-blue-50">
+                    <i class="fas fa-graduation-cap text-white text-3xl"></i>
+                </div>
+
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-extrabold text-gray-800 mb-2">Simulasi TKA</h2>
                     <p class="text-gray-500 text-xs md:text-sm">Pilih jenjang dan mata pelajaran untuk memulai simulasi</p>
@@ -235,11 +253,11 @@
 
                     <p id="errorLogin" class="hidden text-red-600 text-xs font-bold text-center bg-red-50 py-2 rounded border border-red-200"><i class="fas fa-exclamation-circle"></i> Mohon lengkapi seluruh data isian.</p>
                     
-                    <button onclick="masukSistem()" class="w-full bg-[#4a72a4] hover:bg-[#385e8a] text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-4 flex justify-center items-center gap-2 text-sm md:text-base shadow-md">
+                    <button onclick="masukSistem()" class="w-full bg-[#2870b4] hover:bg-[#1f5a92] text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-4 flex justify-center items-center gap-2 text-sm md:text-base shadow-md">
                         <i class="fas fa-play text-xs"></i> Mulai Simulasi
                     </button>
 
-                    <!-- Tombol Install PWA (Awalnya Sembunyi, Muncul Jika Mendukung) -->
+                    <!-- Tombol Install PWA -->
                     <button id="btnInstallPwa" onclick="installPWA()" class="hidden w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-3 justify-center items-center gap-2 text-sm md:text-base shadow-md border border-green-700">
                         <i class="fas fa-mobile-alt"></i> Install Aplikasi di HP
                     </button>
@@ -255,13 +273,14 @@
     <!-- LAYAR 2: SELAMAT DATANG (Login Ujian) -->
     <div id="layarWelcome" class="hidden flex-1 flex-col w-full relative min-h-screen bg-gray-50">
         <!-- Top Half Blue Motif -->
-        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-sismendik-motif z-0 shadow-md">
+        <div class="absolute top-0 left-0 w-full h-[25vh] md:h-[30vh] bg-sismendik-motif z-0 shadow-md">
             <!-- Header Bar -->
             <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
                 <img src="simulasitka.png" alt="Logo" class="w-12 h-12 md:w-14 md:h-14 object-contain" onerror="this.style.display='none';">
-            <div>
-                <h1 class="font-extrabold text-xl md:text-2xl leading-tight">SISMENDIK</h1>
-                <p class="text-[10px] md:text-[11px] opacity-90 uppercase">Aplikasi ANBK</p>
+                <div>
+                    <h1 class="font-extrabold text-xl md:text-2xl leading-tight">SISMENDIK</h1>
+                    <p class="text-[10px] md:text-[11px] opacity-90 uppercase">Aplikasi ANBK</p>
+                </div>
             </div>
         </div>
 
@@ -301,13 +320,10 @@
             <!-- Header Bar -->
             <div class="w-full flex justify-between items-center p-5 md:px-8 md:py-6 relative z-10 text-white">
                 <div class="flex items-center gap-4">
-                    <div class="bg-white rounded-full p-1 shadow-md">
-                        <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                        <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
-                    </div>
+                    <img src="simulasitka.png" alt="Logo" class="w-12 h-12 md:w-14 md:h-14 object-contain" onerror="this.style.display='none';">
                     <div>
-                        <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
-                        <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
+                        <h1 class="font-extrabold text-xl md:text-2xl leading-tight">SISMENDIK</h1>
+                        <p class="text-[10px] md:text-[11px] opacity-90 uppercase">Aplikasi ANBK</p>
                     </div>
                 </div>
                 <!-- Informasi User di Kanan Atas -->
@@ -403,10 +419,7 @@
     <!-- HEADER (Fixed) UNTUK LAYAR UJIAN -->
     <header id="headerUjian" class="hidden bg-sismendik-motif text-white p-3 md:px-6 md:py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div class="flex items-center gap-4 relative z-10">
-            <div class="bg-white rounded-full p-1 shadow-md">
-                <img src="simulasitka.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <i class="fas fa-graduation-cap text-2xl md:text-3xl text-blue-600 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hidden"></i>
-            </div>
+            <img src="simulasitka.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain" onerror="this.style.display='none';">
             <div>
                 <h1 class="font-extrabold text-base md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
                 <p class="text-[9px] md:text-[10px] tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
@@ -1370,7 +1383,7 @@
             "start_url": ".",
             "display": "standalone",
             "background_color": "#e5e7eb",
-            "theme_color": "#4384bd",
+            "theme_color": "#2870b4",
             "icons": [
                 { "src": "simulasitka.png", "sizes": "192x192", "type": "image/png" },
                 { "src": "simulasitka.png", "sizes": "512x512", "type": "image/png" }
