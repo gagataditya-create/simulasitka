@@ -14,7 +14,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Font Khas Pusmendik -->
+    <!-- Font Khas Sismendik -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Custom scrollbar for better look */
@@ -36,6 +36,7 @@
         .option-input:checked + div {
             border-color: #2563eb;
             background-color: #eff6ff;
+            transform: scale(1.01);
         }
         /* Radio PG */
         .option-radio:checked + div .radio-circle {
@@ -71,23 +72,18 @@
             background-color: #2563eb;
             color: white;
             border-color: #2563eb;
+            transform: scale(1.05);
         }
 
-        /* --- TEMA PUSMENDIK --- */
-        .bg-pusmendik-dots {
-            background-color: #4384bd;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px);
-            background-size: 30px 30px;
-        }
-        
-        .bg-pusmendik-motif {
+        /* --- TEMA SISMENDIK --- */
+        .bg-sismendik-motif {
             background-color: #4384bd;
             position: relative;
             overflow: hidden;
         }
         
         /* Motif Geometris Khas ANBK Baru */
-        .bg-pusmendik-motif::before {
+        .bg-sismendik-motif::before {
             content: '';
             position: absolute;
             top: -50%; left: -10%;
@@ -96,7 +92,7 @@
             transform: rotate(20deg);
             pointer-events: none;
         }
-        .bg-pusmendik-motif::after {
+        .bg-sismendik-motif::after {
             content: '';
             position: absolute;
             top: -20%; right: -15%;
@@ -138,26 +134,53 @@
         .input-konfirm:focus {
             border-bottom-color: #007bff;
         }
+
+        /* --- ANIMASI LEMBUT (SMOOTH) --- */
+        @keyframes dropDownSmooth {
+            0% {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-drop-down {
+            animation: dropDownSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInSmooth {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeInSmooth 0.4s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col select-none" style="font-family: 'Montserrat', sans-serif;">
 
     <!-- LAYAR 1: LOGIN PESERTA (Pos Satpam) -->
-    <div id="layarLogin" class="flex-1 flex flex-col min-h-screen bg-pusmendik-dots relative">
-        <!-- Header Bar -->
-        <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
-            <div class="bg-white rounded-full p-1 shadow-md">
-                <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
-            </div>
-            <div>
-                <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
-                <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK - Simulasi TKA</p>
+    <div id="layarLogin" class="flex-1 flex flex-col min-h-screen bg-gray-50 relative">
+        <!-- Top Half Blue Motif (Seragam dengan halaman 2 & 3) -->
+        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-sismendik-motif z-0 shadow-md">
+            <!-- Header Bar -->
+            <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
+                <div class="bg-white rounded-full p-1 shadow-md">
+                    <img src="simulasitka.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                    <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
+                    <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK - Simulasi TKA</p>
+                </div>
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 -mt-10">
-            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] max-w-md w-full">
+        <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 mt-16 md:mt-12">
+            <!-- Box Popup diberi Animasi Drop Down -->
+            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] max-w-md w-full border border-gray-100 animate-drop-down">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-extrabold text-gray-800 mb-2">Simulasi TKA</h2>
                     <p class="text-gray-500 text-xs md:text-sm">Pilih jenjang dan mata pelajaran untuk memulai simulasi</p>
@@ -184,7 +207,7 @@
                             <i class="fas fa-layer-group text-blue-600"></i> Jenjang Pendidikan:
                         </label>
                         <div class="relative">
-                            <select id="inputJenjang" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-white">
+                            <select id="inputJenjang" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-gray-50 hover:bg-white transition-colors">
                                 <option value="SMP/MTs/Sederajat" selected>SMP/MTs/Sederajat</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -198,7 +221,7 @@
                             <i class="fas fa-book text-blue-600"></i> Mata Pelajaran:
                         </label>
                         <div class="relative">
-                            <select id="inputMapel" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-white">
+                            <select id="inputMapel" class="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-blue-500 transition-colors text-gray-800 font-medium text-sm appearance-none cursor-pointer bg-gray-50 hover:bg-white transition-colors">
                                 <option value="" disabled selected hidden>Pilih Mata Pelajaran...</option>
                                 <option value="Matematika">Matematika</option>
                                 <option value="Bahasa Indonesia">Bahasa Indonesia</option>
@@ -211,13 +234,13 @@
 
                     <p id="errorLogin" class="hidden text-red-600 text-xs font-bold text-center bg-red-50 py-2 rounded border border-red-200"><i class="fas fa-exclamation-circle"></i> Mohon lengkapi seluruh data isian.</p>
                     
-                    <button onclick="masukSistem()" class="w-full bg-[#4a72a4] hover:bg-[#385e8a] text-white font-bold py-3 rounded-lg transition-colors mt-4 flex justify-center items-center gap-2 text-sm md:text-base">
+                    <button onclick="masukSistem()" class="w-full bg-[#4a72a4] hover:bg-[#385e8a] text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-4 flex justify-center items-center gap-2 text-sm md:text-base shadow-md">
                         <i class="fas fa-play text-xs"></i> Mulai Simulasi
                     </button>
                 </div>
 
                 <div class="mt-8 pt-4 border-t border-gray-100 text-center text-[10px] md:text-xs text-gray-500 font-medium">
-                    Copyright &copy; 2026 Pusmendik. All rights reserved.
+                    Copyright &copy; 2026 Sismendik. All rights reserved.
                 </div>
             </div>
         </div>
@@ -225,8 +248,8 @@
 
     <!-- LAYAR 2: SELAMAT DATANG (Login Ujian) -->
     <div id="layarWelcome" class="hidden flex-1 flex-col w-full relative min-h-screen bg-gray-50">
-        <!-- Top Half Blue Motif (DIPERSEMPIT) -->
-        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-pusmendik-motif z-0 shadow-md">
+        <!-- Top Half Blue Motif -->
+        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-sismendik-motif z-0 shadow-md">
             <!-- Header Bar -->
             <div class="w-full flex items-center p-5 md:p-8 gap-4 relative z-10 text-white">
                 <div class="bg-white rounded-full p-1 shadow-md">
@@ -234,15 +257,15 @@
                     <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                    <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
                     <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
                 </div>
             </div>
         </div>
 
-        <!-- Center Card -->
+        <!-- Center Card dengan animasi -->
         <div class="flex-1 flex flex-col justify-center items-center p-4 relative z-10 mt-20 md:mt-16">
-            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] max-w-md w-full border border-gray-100">
+            <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] max-w-md w-full border border-gray-100 animate-drop-down">
                 <h2 class="text-xl md:text-2xl font-extrabold text-gray-800 mb-2">Selamat Datang</h2>
                 <p class="text-gray-500 text-xs md:text-sm mb-8 leading-relaxed">Silakan login dengan memastikan data diri dan mata pelajaran di bawah ini sudah sesuai.</p>
                 
@@ -262,7 +285,7 @@
                     </div>
                 </div>
 
-                <button onclick="lanjutLogin()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-bold py-3 rounded-full transition-colors shadow-lg shadow-blue-500/40 text-sm md:text-base tracking-wide">
+                <button onclick="lanjutLogin()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-bold py-3 rounded-full transition-transform hover:scale-[1.03] shadow-lg shadow-blue-500/40 text-sm md:text-base tracking-wide">
                     Login
                 </button>
             </div>
@@ -271,8 +294,8 @@
 
     <!-- LAYAR 3: KONFIRMASI DATA & TOKEN -->
     <div id="layarKonfirmasi" class="hidden flex-1 flex-col w-full relative min-h-screen bg-gray-50">
-        <!-- Top Half Blue Motif (DIPERSEMPIT) -->
-        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-pusmendik-motif z-0 shadow-md">
+        <!-- Top Half Blue Motif -->
+        <div class="absolute top-0 left-0 w-full h-[35vh] md:h-[40vh] bg-sismendik-motif z-0 shadow-md">
             <!-- Header Bar -->
             <div class="w-full flex justify-between items-center p-5 md:px-8 md:py-6 relative z-10 text-white">
                 <div class="flex items-center gap-4">
@@ -281,7 +304,7 @@
                         <i class="fas fa-graduation-cap text-3xl text-blue-600 w-10 h-10 flex items-center justify-center hidden"></i>
                     </div>
                     <div>
-                        <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                        <h1 class="font-extrabold text-lg md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
                         <p class="text-[10px] md:text-xs tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
                     </div>
                 </div>
@@ -297,17 +320,17 @@
         <div class="flex-1 flex flex-col md:flex-row justify-center md:items-start items-center p-4 relative z-10 mt-16 md:mt-10 gap-6 max-w-5xl mx-auto w-full">
             
             <!-- Left Side: Token Box -->
-            <div class="bg-white p-5 rounded-lg shadow-md w-full md:w-auto md:min-w-[300px] flex items-center justify-between border border-gray-100">
+            <div class="bg-white p-5 rounded-lg shadow-md w-full md:w-auto md:min-w-[300px] flex items-center justify-between border border-gray-100 animate-drop-down" style="animation-delay: 0.1s; opacity: 0;">
                 <div class="text-sm font-medium text-gray-700">Token : <span id="displayToken" class="font-bold tracking-widest text-gray-900 ml-1">XXXXXX</span></div>
-                <button onclick="generateToken()" class="bg-[#007bff] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded transition-colors shadow-sm">Refresh</button>
+                <button onclick="generateToken()" class="bg-[#007bff] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded transition-transform hover:scale-105 shadow-sm">Refresh</button>
             </div>
 
             <!-- Right Side: Form Konfirmasi -->
-            <div class="bg-white p-6 md:p-8 rounded-lg shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] w-full max-w-md border border-gray-100 bg-watermark">
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-[0_10px_30px_-15px_rgba(0,0,0,0.3)] w-full max-w-md border border-gray-100 bg-watermark animate-drop-down">
                 <h2 class="text-xl md:text-2xl font-medium text-gray-800 mb-6 border-b border-gray-100 pb-4">Konfirmasi data Peserta</h2>
                 
                 <div class="space-y-4">
-                    <!-- Kode NIK Diubah Jadi KODE UNIK -->
+                    <!-- Kode Unik -->
                     <div>
                         <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Kode Unik</label>
                         <div class="border-b border-gray-200 pb-1 mt-1 text-sm text-gray-800 font-medium" id="konfirmNik">P000000000</div>
@@ -322,7 +345,7 @@
                     <!-- Jenis Kelamin -->
                     <div>
                         <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Jenis Kelamin</label>
-                        <select class="input-konfirm mt-1 appearance-none bg-transparent cursor-pointer font-medium">
+                        <select class="input-konfirm mt-1 appearance-none bg-transparent cursor-pointer font-medium hover:bg-gray-50 transition-colors">
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
                         </select>
@@ -338,18 +361,18 @@
                     <div>
                         <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide mb-1">Tanggal Lahir</label>
                         <div class="flex gap-2">
-                            <select id="konfirmTgl" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                            <select id="konfirmTgl" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer hover:bg-gray-200 transition-colors">
                                 <option value="">Hari</option>
                                 <script>for(let i=1;i<=31;i++) document.write(`<option value="${i}">${i}</option>`);</script>
                             </select>
-                            <select id="konfirmBln" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                            <select id="konfirmBln" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer hover:bg-gray-200 transition-colors">
                                 <option value="">Bulan</option>
                                 <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option>
                                 <option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option>
                                 <option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option>
                                 <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
                             </select>
-                            <select id="konfirmThn" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer">
+                            <select id="konfirmThn" class="bg-gray-100 text-gray-700 text-sm px-2 py-1.5 rounded outline-none focus:ring-1 focus:ring-blue-500 flex-1 appearance-none cursor-pointer hover:bg-gray-200 transition-colors">
                                 <option value="">Tahun</option>
                                 <script>
                                     let year = new Date().getFullYear();
@@ -363,12 +386,12 @@
                     <div class="pt-2">
                         <label class="block text-[10px] font-bold text-[#007bff] uppercase tracking-wide">Token</label>
                         <input type="text" id="konfirmInputToken" class="input-konfirm mt-1 font-bold uppercase tracking-widest text-base" placeholder="Ketikkan token di sini" autocomplete="off">
-                        <p id="errorKonfirmasiMsg" class="hidden text-red-500 text-[11px] font-bold mt-1.5"><i class="fas fa-times-circle"></i> Token salah atau tanggal lahir belum diisi!</p>
+                        <p id="errorKonfirmasiMsg" class="hidden text-red-500 text-[11px] font-bold mt-1.5 animate-fade-in"><i class="fas fa-times-circle"></i> Token salah atau tanggal lahir belum diisi!</p>
                     </div>
 
                 </div>
 
-                <button onclick="submitKonfirmasi()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-medium py-2.5 rounded transition-colors shadow-md mt-8 text-sm tracking-wide">
+                <button onclick="submitKonfirmasi()" class="w-full bg-[#007bff] hover:bg-blue-700 text-white font-medium py-2.5 rounded transition-transform hover:scale-[1.02] shadow-md mt-8 text-sm tracking-wide">
                     Submit
                 </button>
             </div>
@@ -376,14 +399,14 @@
     </div>
 
     <!-- HEADER (Fixed) UNTUK LAYAR UJIAN -->
-    <header id="headerUjian" class="hidden bg-pusmendik-motif text-white p-3 md:px-6 md:py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
+    <header id="headerUjian" class="hidden bg-sismendik-motif text-white p-3 md:px-6 md:py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div class="flex items-center gap-4 relative z-10">
             <div class="bg-white rounded-full p-1 shadow-md">
                 <img src="simulasitka.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                 <i class="fas fa-graduation-cap text-2xl md:text-3xl text-blue-600 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hidden"></i>
             </div>
             <div>
-                <h1 class="font-extrabold text-base md:text-xl tracking-wide leading-tight">PUSMENDIK</h1>
+                <h1 class="font-extrabold text-base md:text-xl tracking-wide leading-tight">SISMENDIK</h1>
                 <p class="text-[9px] md:text-[10px] tracking-wider opacity-90 uppercase">Aplikasi ANBK</p>
             </div>
         </div>
@@ -412,15 +435,15 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="text-sm text-gray-700">Ukuran font soal:</span>
-                        <button onclick="changeFontSize(-1)" class="text-sm font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
-                        <button onclick="changeFontSize(0)" class="text-base font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
-                        <button onclick="changeFontSize(1)" class="text-lg font-medium text-gray-800 hover:text-[#007bff] transition-colors">A</button>
+                        <button onclick="changeFontSize(-1)" class="text-sm font-medium text-gray-800 hover:text-[#007bff] transition-colors hover:scale-110">A</button>
+                        <button onclick="changeFontSize(0)" class="text-base font-medium text-gray-800 hover:text-[#007bff] transition-colors hover:scale-110">A</button>
+                        <button onclick="changeFontSize(1)" class="text-lg font-medium text-gray-800 hover:text-[#007bff] transition-colors hover:scale-110">A</button>
                     </div>
                 </div>
                 
                 <!-- Sisi Kanan -->
                 <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                    <button class="bg-[#007bff] hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs font-bold transition-colors shadow-sm tracking-wide whitespace-nowrap">INFORMASI SOAL</button>
+                    <button class="bg-[#007bff] hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs font-bold transition-transform hover:scale-105 shadow-sm tracking-wide whitespace-nowrap">INFORMASI SOAL</button>
                     <!-- Timer Box -->
                     <div class="bg-white border border-gray-400 px-4 py-2 rounded-full shadow-sm flex items-center gap-2 min-w-[160px] justify-center transition-colors">
                         <span class="text-xs font-medium text-gray-600">Sisa Waktu :</span>
@@ -431,7 +454,7 @@
 
             <!-- Question Text & Options -->
             <div id="questionContainer" class="p-6 overflow-y-auto flex-1 text-base leading-relaxed text-gray-800">
-                <!-- Content injected via JS -->
+                <!-- Content injected via JS (dengan animasi masuk fade in) -->
             </div>
         </div>
 
@@ -439,7 +462,7 @@
         <div id="panelDaftarSoal" class="hidden md:flex w-full md:w-72 bg-white shadow-md rounded-md flex-col border border-gray-200">
             <div class="bg-[#4384bd] border-b p-3 font-bold text-center text-white flex justify-between items-center">
                 <span>Daftar Soal</span>
-                <button id="closePanelBtn" class="md:hidden text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+                <button id="closePanelBtn" class="md:hidden text-white hover:text-gray-200 transition-transform hover:scale-110"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-4 overflow-y-auto">
                 <div id="gridDaftarSoal" class="grid grid-cols-5 gap-2">
@@ -457,49 +480,48 @@
     <!-- FOOTER NAVIGATION -->
     <footer id="footerUjian" class="hidden bg-white border-t p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] fixed bottom-0 w-full z-40">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
-            <!-- Warna tombol soal sebelumnya diubah ke merah -->
-            <button id="btnPrev" class="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+            <button id="btnPrev" class="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-sm">
                 <i class="fas fa-chevron-left"></i> <span class="hidden md:inline">Soal Sebelumnya</span>
             </button>
             <div class="flex items-center gap-4">
-                <label class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base cursor-pointer flex items-center gap-2 transition-colors border border-yellow-500 shadow-sm">
+                <label class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base cursor-pointer flex items-center gap-2 transition-transform hover:scale-[1.02] border border-yellow-500 shadow-sm">
                     <input type="checkbox" id="chkRagu" class="w-4 h-4 cursor-pointer accent-gray-800">
                     <span>Ragu-ragu</span>
                 </label>
-                <button id="btnTogglePanel" class="md:hidden bg-white border border-gray-400 text-gray-700 px-3 py-2.5 rounded font-bold shadow-sm">
+                <button id="btnTogglePanel" class="md:hidden bg-white border border-gray-400 text-gray-700 px-3 py-2.5 rounded font-bold shadow-sm transition-colors hover:bg-gray-50">
                     <i class="fas fa-th"></i>
                 </button>
             </div>
-            <button id="btnNext" class="bg-[#007bff] hover:bg-blue-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-colors shadow-sm">
+            <button id="btnNext" class="bg-[#007bff] hover:bg-blue-700 text-white px-4 md:px-6 py-2.5 rounded font-semibold text-sm md:text-base flex items-center gap-2 transition-transform hover:scale-[1.02] shadow-sm">
                 <span class="hidden md:inline" id="textNext">Soal Selanjutnya</span> <i class="fas fa-chevron-right" id="iconNext"></i>
             </button>
         </div>
     </footer>
 
     <!-- Overlay Konfirmasi Selesai -->
-    <div id="modalSelesai" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-[60]">
-        <div class="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4">
+    <div id="modalSelesai" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-[60] animate-fade-in">
+        <div class="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full mx-4 animate-drop-down">
             <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-800">Konfirmasi Selesai</h2>
             <p class="mb-6 text-gray-600 font-medium" id="modalSelesaiText">Apakah Anda yakin ingin menyelesaikan ujian ini?</p>
             <div class="flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-bold transition-colors">Batal</button>
-                <button onclick="submitUjian()" class="px-5 py-2 bg-[#007bff] text-white rounded-lg hover:bg-blue-700 font-bold transition-colors">Ya, Selesai</button>
+                <button onclick="closeModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-bold transition-transform hover:scale-105">Batal</button>
+                <button onclick="submitUjian()" class="px-5 py-2 bg-[#007bff] text-white rounded-lg hover:bg-blue-700 font-bold transition-transform hover:scale-105">Ya, Selesai</button>
             </div>
         </div>
     </div>
 
     <!-- Papan Skor Sementara -->
-    <div id="modalSkor" class="fixed inset-0 bg-black bg-opacity-80 hidden justify-center items-center z-[70]">
-        <div class="bg-white p-8 rounded-xl shadow-xl max-w-md w-full mx-4 text-center">
-            <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+    <div id="modalSkor" class="fixed inset-0 bg-black bg-opacity-80 hidden justify-center items-center z-[70] animate-fade-in">
+        <div class="bg-white p-8 rounded-xl shadow-xl max-w-md w-full mx-4 text-center animate-drop-down">
+            <i class="fas fa-check-circle text-6xl text-green-500 mb-4 animate-bounce"></i>
             <h2 class="text-2xl font-extrabold mb-2 text-gray-800">Ujian Selesai!</h2>
             <p class="text-gray-600 font-medium mb-2">Terima kasih, <strong id="skorNamaSiswa" class="text-blue-600">-</strong> dari <strong id="skorAsalSekolah">-</strong>.</p>
             <p class="text-gray-500 mb-6 text-sm">Jawaban Anda telah terekam oleh sistem simulasi.</p>
-            <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
+            <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6 transition-all hover:shadow-inner">
                 <p class="text-sm text-blue-800 uppercase tracking-wide font-bold">Skor Akhir Anda</p>
                 <p class="text-6xl font-black text-[#007bff] mt-2" id="skorAkhir">0</p>
             </div>
-            <button onclick="location.reload()" class="w-full px-4 py-3 bg-gray-800 text-white rounded-lg font-bold hover:bg-gray-900 transition-colors">Kembali ke Beranda</button>
+            <button onclick="location.reload()" class="w-full px-4 py-3 bg-gray-800 text-white rounded-lg font-bold hover:bg-gray-900 transition-transform hover:scale-[1.02]">Kembali ke Beranda</button>
         </div>
     </div>
 
@@ -980,6 +1002,12 @@
             htmlOpsi += (soal.kategori !== 'PGK') ? '</div>' : '';
             
             elQuestionContainer.style.fontSize = `${baseFontSize}px`;
+            
+            // Animasi transisi antar soal
+            elQuestionContainer.classList.remove('animate-fade-in');
+            void elQuestionContainer.offsetWidth; // trigger reflow untuk reset animasi
+            elQuestionContainer.classList.add('animate-fade-in');
+            
             elQuestionContainer.innerHTML = soal.teks + htmlOpsi;
             chkRagu.checked = soal.ragu;
 
@@ -1043,7 +1071,7 @@
             bankSoal.forEach((soal, idx) => {
                 const btn = document.createElement('button');
                 btn.innerText = idx + 1;
-                btn.className = `w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm border-2 transition-all`;
+                btn.className = `w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm border-2 transition-all hover:scale-105`;
                 
                 let isDijawab = false;
                 if(soal.kategori === 'PG') isDijawab = soal.jawabanSiswa !== null;
@@ -1105,9 +1133,9 @@
                 timerDisplay.innerText = String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
                 
                 if(totalWaktuDetik > 0 && totalWaktuDetik < 300) {
-                    timerDisplay.parentElement.classList.replace('bg-white', 'bg-red-50');
                     timerDisplay.parentElement.classList.replace('border-gray-400', 'border-red-500');
-                    timerDisplay.classList.replace('text-gray-800', 'text-red-700');
+                    timerDisplay.parentElement.classList.replace('text-gray-600', 'text-red-600');
+                    timerDisplay.classList.replace('text-gray-800', 'text-red-600');
                     timerDisplay.parentElement.classList.add('animate-pulse');
                 }
             }, 1000);
