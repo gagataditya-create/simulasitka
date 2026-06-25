@@ -967,14 +967,14 @@
                 });
             }
             else if (soal.kategori === 'PGK') {
-                htmlOpsi = `<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden">
-                    <table class="w-full text-left text-sm md:text-base">
+                htmlOpsi = `<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden w-full">
+                    <table class="w-full text-left text-xs md:text-base table-fixed break-words">
                         <thead class="bg-gray-100 border-b">
                             <tr>
-                                <th class="p-3 w-8 md:w-12 text-center text-gray-600">No</th>
-                                <th class="p-3 border-l text-gray-600">Pernyataan</th>
-                                <th class="p-3 w-20 text-center border-l bg-green-50 text-green-700">Benar</th>
-                                <th class="p-3 w-20 text-center border-l bg-red-50 text-red-700">Salah</th>
+                                <th class="p-1 md:p-3 w-8 md:w-12 text-center text-gray-600">No</th>
+                                <th class="p-2 md:p-3 border-l text-gray-600">Pernyataan</th>
+                                <th class="p-1 md:p-3 w-12 md:w-20 text-center border-l bg-green-50 text-green-700">Benar</th>
+                                <th class="p-1 md:p-3 w-12 md:w-20 text-center border-l bg-red-50 text-red-700">Salah</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y">`;
@@ -985,18 +985,18 @@
                     
                     htmlOpsi += `
                         <tr class="hover:bg-gray-50">
-                            <td class="p-3 text-center font-bold text-gray-400">${idx + 1}</td>
-                            <td class="p-3 border-l text-gray-800 font-medium">${teksOpsi}</td>
-                            <td class="p-2 border-l text-center align-middle">
+                            <td class="p-1 md:p-3 text-center font-bold text-gray-400 align-middle">${idx + 1}</td>
+                            <td class="p-2 md:p-3 border-l text-gray-800 font-medium align-middle pr-2">${teksOpsi}</td>
+                            <td class="p-1 md:p-2 border-l text-center align-middle">
                                 <label class="cursor-pointer block">
                                     <input type="radio" name="pgk_${index}_${idx}" class="pgk-radio hidden" onchange="pilihPGK(${idx}, 'B')" ${isBenar}>
-                                    <div class="w-8 h-8 md:w-10 md:h-10 mx-auto rounded border-2 border-gray-300 flex items-center justify-center font-bold text-gray-400 hover:border-blue-400 transition-colors">B</div>
+                                    <div class="w-7 h-7 md:w-10 md:h-10 mx-auto rounded border-2 border-gray-300 flex items-center justify-center font-bold text-gray-400 hover:border-blue-400 transition-colors text-[10px] md:text-base">B</div>
                                 </label>
                             </td>
-                            <td class="p-2 border-l text-center align-middle">
+                            <td class="p-1 md:p-2 border-l text-center align-middle">
                                 <label class="cursor-pointer block">
                                     <input type="radio" name="pgk_${index}_${idx}" class="pgk-radio hidden" onchange="pilihPGK(${idx}, 'S')" ${isSalah}>
-                                    <div class="w-8 h-8 md:w-10 md:h-10 mx-auto rounded border-2 border-gray-300 flex items-center justify-center font-bold text-gray-400 hover:border-blue-400 transition-colors">S</div>
+                                    <div class="w-7 h-7 md:w-10 md:h-10 mx-auto rounded border-2 border-gray-300 flex items-center justify-center font-bold text-gray-400 hover:border-blue-400 transition-colors text-[10px] md:text-base">S</div>
                                 </label>
                             </td>
                         </tr>`;
