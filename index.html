@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi CBT TKA SMP</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA Meta Tags & Favicon -->
     <meta name="theme-color" content="#4384bd">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="simulasitka.png">
+    <link rel="icon" type="image/png" href="simulasitka.png">
     <link rel="manifest" id="pwa-manifest">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -236,6 +237,11 @@
                     
                     <button onclick="masukSistem()" class="w-full bg-[#4a72a4] hover:bg-[#385e8a] text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-4 flex justify-center items-center gap-2 text-sm md:text-base shadow-md">
                         <i class="fas fa-play text-xs"></i> Mulai Simulasi
+                    </button>
+
+                    <!-- Tombol Install PWA (Awalnya Sembunyi, Muncul Jika Mendukung) -->
+                    <button id="btnInstallPwa" onclick="installPWA()" class="hidden w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] mt-3 justify-center items-center gap-2 text-sm md:text-base shadow-md border border-green-700">
+                        <i class="fas fa-mobile-alt"></i> Install Aplikasi di HP
                     </button>
                 </div>
 
@@ -763,6 +769,40 @@
             }
         }
 
+        function ambilBerdasarkanKesulitan(arrayMentah, butuhMudah, butuhSedang, butuhSulit) {
+            let mudah = [], sedang = [], sulit = [], sisa = [];
+            
+            // Mengelompokkan soal berdasarkan tingkat kesulitan
+            arrayMentah.forEach(item => {
+                let diff = (item.Kesulitan || item.Tingkat_Kesulitan || item.Level || '').toString().toLowerCase().trim();
+                if (diff === 'mudah') mudah.push(item);
+                else if (diff === 'sedang') sedang.push(item);
+                else if (diff === 'sulit') sulit.push(item);
+                else sisa.push(item); // Cadangan jika kolom kesulitan kosong/typo
+            });
+
+            // Fungsi internal untuk mengambil jumlah soal dengan aman
+            const ambil = (arr, jumlah) => {
+                let hasil = acakSoal([...arr]).slice(0, jumlah);
+                let kurang = jumlah - hasil.length;
+                if (kurang > 0) { // Jika stok kurang, ambil dari sisa (cadangan)
+                    let cadangan = acakSoal([...sisa]).slice(0, kurang);
+                    hasil = [...hasil, ...cadangan];
+                    sisa = sisa.filter(x => !cadangan.includes(x)); // Hapus yang sudah dipakai
+                }
+                return hasil;
+            };
+
+            let paket = [
+                ...ambil(mudah, butuhMudah),
+                ...ambil(sedang, butuhSedang),
+                ...ambil(sulit, butuhSulit)
+            ];
+
+            // Acak ulang agar posisi soal mudah, sedang, sulit bercampur rata
+            return acakSoal(paket);
+        }
+
         async function mulaiUjian(mataUjian) {
             document.getElementById('headerUjian').classList.remove('hidden');
             document.getElementById('mainUjian').classList.remove('hidden');
@@ -822,10 +862,11 @@
                 
                 const mentahSurvei = rawData.survei || [];
 
-                const paketPG = acakSoal([...mentahPG]).slice(0, 15);
-                const paketMCMA = acakSoal([...mentahMCMA]).slice(0, 8);
-                const paketPGK = acakSoal([...mentahPGK]).slice(0, 7);
-                const paketSurvei = acakSoal([...mentahSurvei]).slice(0, 10);
+                // Komposisi Baru (Total 40: 30 Mapel + 10 Survei)
+                const paketPG = ambilBerdasarkanKesulitan(mentahPG, 2, 8, 8); // 18 Soal PG (2 Mudah, 8 Sedang, 8 Sulit)
+                const paketMCMA = ambilBerdasarkanKesulitan(mentahMCMA, 1, 3, 2); // 6 Soal MCMA (1 Mudah, 3 Sedang, 2 Sulit)
+                const paketPGK = ambilBerdasarkanKesulitan(mentahPGK, 1, 3, 2); // 6 Soal PGK (1 Mudah, 3 Sedang, 2 Sulit)
+                const paketSurvei = ambilBerdasarkanKesulitan(mentahSurvei, 2, 4, 4); // 10 Soal Survei (2 Mudah, 4 Sedang, 4 Sulit)
 
                 const formatPG = formatDataSheet(paketPG, 'PG');
                 const formatMCMA = formatDataSheet(paketMCMA, 'MCMA');
@@ -1310,6 +1351,42 @@
         };
         const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
         document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+        let deferredPrompt;
+        const btnInstallPwa = document.getElementById('btnInstallPwa');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah browser menampilkan prompt default
+            e.preventDefault();
+            // Simpan event sehingga dapat dipicu nanti oleh tombol kita
+            deferredPrompt = e;
+            // Tampilkan tombol instalasi di Layar Login
+            btnInstallPwa.classList.remove('hidden');
+            btnInstallPwa.classList.add('flex');
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                // Tampilkan prompt instalasi bawaan HP/Browser
+                deferredPrompt.prompt();
+                // Tunggu respons dari user (apakah menekan "Install" atau "Cancel")
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    // Jika diinstal, sembunyikan tombol
+                    btnInstallPwa.classList.add('hidden');
+                    btnInstallPwa.classList.remove('flex');
+                }
+                // Reset deferredPrompt karena hanya bisa dipakai sekali
+                deferredPrompt = null;
+            }
+        }
+
+        window.addEventListener('appinstalled', () => {
+            // Sembunyikan tombol secara permanen jika aplikasi sudah terinstal di sistem
+            btnInstallPwa.classList.add('hidden');
+            btnInstallPwa.classList.remove('flex');
+            deferredPrompt = null;
+        });
 
         if ('serviceWorker' in navigator) {
             const swCode = `
