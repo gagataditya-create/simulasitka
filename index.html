@@ -164,6 +164,15 @@
         .animate-fade-in {
             animation: fadeInSmooth 0.4s ease-out forwards;
         }
+
+        /* Mesin Penggerak Animasi Toga */
+        @keyframes floatToga {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float-toga {
+            animation: floatToga 3s ease-in-out infinite;
+        }
     </style>
 
     <!-- Mesin Rumus Matematika (MathJax) -->
@@ -1175,7 +1184,8 @@
 
         document.getElementById('btnTogglePanel').addEventListener('click', () => {
             panelDaftarSoal.classList.toggle('hidden');
-            panelDaftarSoal.classList.add('absolute', 'top-16', 'right-4', 'z-50', 'max-h-[70vh]', 'shadow-2xl');
+            panelDaftarSoal.classList.remove('w-full', 'right-4'); 
+            panelDaftarSoal.classList.add('absolute', 'top-16', 'left-1/2', '-translate-x-1/2', 'w-[92%]', 'max-w-sm', 'z-50', 'max-h-[75vh]', 'shadow-2xl');
         });
         document.getElementById('closePanelBtn').addEventListener('click', () => { panelDaftarSoal.classList.add('hidden'); });
 
