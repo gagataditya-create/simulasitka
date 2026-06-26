@@ -164,17 +164,19 @@
         .animate-fade-in {
             animation: fadeInSmooth 0.4s ease-out forwards;
         }
-
-        /* Animasi Toga Naik Turun */
-        @keyframes floatToga {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-        .animate-float-toga {
-            animation: floatToga 3s ease-in-out infinite;
-        }
     </style>
+
+    <!-- Mesin Rumus Matematika (MathJax) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col select-none" style="font-family: 'Montserrat', sans-serif;">
 
@@ -1056,6 +1058,11 @@
             
             elQuestionContainer.innerHTML = soal.teks + htmlOpsi;
             chkRagu.checked = soal.ragu;
+
+            // Trigger Mesin Rumus LaTeX (MathJax) setelah soal dirender
+            if (window.MathJax) {
+                MathJax.typesetPromise([elQuestionContainer]).catch((err) => console.log('MathJax error: ', err.message));
+            }
 
             btnPrev.disabled = index === 0;
             if (index === bankSoal.length - 1) {
