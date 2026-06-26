@@ -348,10 +348,12 @@
         <!-- Center Layout: Token (Kiri) & Form (Kanan) -->
         <div class="flex-1 flex flex-col md:flex-row justify-center md:items-start items-center p-4 relative z-10 mt-16 md:mt-10 gap-6 max-w-5xl mx-auto w-full">
             
-            <!-- Left Side: Token Box -->
-            <div class="bg-white p-5 rounded-lg shadow-md w-full md:w-auto md:min-w-[300px] flex items-center justify-between border border-gray-100 animate-drop-down sticky top-4 z-[60]" style="animation-delay: 0.1s; opacity: 0;">
-                <div class="text-sm font-medium text-gray-700">Token : <span id="displayToken" class="font-bold tracking-widest text-gray-900 ml-1">XXXXXX</span></div>
-                <button onclick="generateToken()" class="bg-[#007bff] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded transition-transform hover:scale-105 shadow-sm">Refresh</button>
+            <!-- Left Side: Token Box Container -->
+            <div id="containerAsliToken" class="w-full md:w-auto md:min-w-[300px] sticky top-4 z-[60]">
+                <div id="boxTokenMain" class="bg-white p-5 rounded-lg shadow-md w-full flex items-center justify-between border border-gray-100 animate-drop-down transition-all duration-300" style="animation-delay: 0.1s; opacity: 0;">
+                    <div class="text-sm font-medium text-gray-700">Token : <span id="displayToken" class="font-bold tracking-widest text-gray-900 ml-1">XXXXXX</span></div>
+                    <button onclick="generateToken()" class="bg-[#007bff] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded transition-transform hover:scale-105 shadow-sm">Refresh</button>
+                </div>
             </div>
 
             <!-- Right Side: Form Konfirmasi -->
@@ -366,7 +368,7 @@
                     </div>
                     
                     <!-- Nama Peserta Readonly -->
-                    <div>
+                    <div id="blokNamaPeserta" class="relative">
                         <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nama Peserta</label>
                         <div class="border-b border-gray-200 pb-1 mt-1 text-sm text-gray-800 font-medium" id="konfirmNamaLengkap">P000000000 - PESERTA TKA</div>
                     </div>
@@ -1414,6 +1416,38 @@
                 .then(() => console.log('Sistem PWA berhasil diaktifkan.'))
                 .catch(err => console.log('PWA gagal diaktifkan:', err));
         }
+
+        // --- FITUR TOKEN POPUP DI HP SAAT KEYBOARD MUNCUL ---
+        setTimeout(() => { 
+            const inputToken = document.getElementById('konfirmInputToken');
+            const boxTokenMain = document.getElementById('boxTokenMain');
+            const blokNamaPeserta = document.getElementById('blokNamaPeserta');
+            const containerAsliToken = document.getElementById('containerAsliToken');
+
+            if (inputToken && boxTokenMain && blokNamaPeserta && containerAsliToken) {
+                inputToken.addEventListener('focus', () => {
+                    // Hanya aktif jika dibuka di layar HP (lebar < 768px)
+                    if(window.innerWidth < 768) {
+                        // Tambahkan efek popup dan pindahkan ke dalam blok Nama Peserta
+                        boxTokenMain.classList.add('absolute', '-top-2', 'left-0', 'right-0', 'z-[80]', 'shadow-[0_15px_40px_-5px_rgba(0,0,0,0.3)]', 'border-2', 'border-[#007bff]', 'scale-105');
+                        boxTokenMain.classList.remove('shadow-md');
+                        blokNamaPeserta.appendChild(boxTokenMain);
+                    }
+                });
+
+                inputToken.addEventListener('blur', () => {
+                    if(window.innerWidth < 768) {
+                        // Jeda 250ms antisipasi user sedang klik tombol Refresh Token
+                        setTimeout(() => { 
+                            boxTokenMain.classList.remove('absolute', '-top-2', 'left-0', 'right-0', 'z-[80]', 'shadow-[0_15px_40px_-5px_rgba(0,0,0,0.3)]', 'border-2', 'border-[#007bff]', 'scale-105');
+                            boxTokenMain.classList.add('shadow-md');
+                            // Kembalikan ke tempat aslinya di atas
+                            containerAsliToken.appendChild(boxTokenMain);
+                        }, 250);
+                    }
+                });
+            }
+        }, 500); // Eksekusi setelah DOM HTML selesai dimuat
     </script>
 </body>
 </html>
