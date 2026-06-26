@@ -739,14 +739,22 @@
                     teksSoalTampil += `<img src="${item.Gambar}" class="max-w-full h-auto mb-4 rounded shadow-sm border border-gray-200" alt="Gambar Ilustrasi">`;
                 }
                 if (item.Soal) {
-                    teksSoalTampil += `<div class="text-justify">${String(item.Soal).replace(/\n/g, '<br><br>')}</div>`;
+                    let soalTeks = String(item.Soal);
+                    // Solusi 1: Mengganti " / " (dengan spasi) menjadi <br> (break rapat untuk bait pantun/puisi)
+                    soalTeks = soalTeks.replace(/ \/ /g, '<br>');
+                    // Solusi 2: Mengganti pindah baris (\n) dari Alt+Enter agar jaraknya rapat (<br>), 
+                    // namun tetap mempertahankan jarak paragraf ganda (\n\n) jika ada
+                    soalTeks = soalTeks.replace(/\n\n/g, ' [DOUBLE_ENTER] ')
+                                       .replace(/\n/g, '<br>')
+                                       .replace(/ \[DOUBLE_ENTER\] /g, '<br><br>');
+                    teksSoalTampil += `<div class="text-justify">${soalTeks}</div>`;
                 }
 
                 let opsiArr = [];
-                if(item.Opsi_A) opsiArr.push(item.Opsi_A);
-                if(item.Opsi_B) opsiArr.push(item.Opsi_B);
-                if(item.Opsi_C) opsiArr.push(item.Opsi_C);
-                if(item.Opsi_D) opsiArr.push(item.Opsi_D);
+                if(item.Opsi_A !== undefined) opsiArr.push(item.Opsi_A);
+                if(item.Opsi_B !== undefined) opsiArr.push(item.Opsi_B);
+                if(item.Opsi_C !== undefined) opsiArr.push(item.Opsi_C);
+                if(item.Opsi_D !== undefined) opsiArr.push(item.Opsi_D);
 
                 let jwbSiswaDefault = null;
                 let jwbBenar = null;
@@ -943,50 +951,6 @@
                     iconLoad.classList.remove('fa-spin');
                 }
             }
-        }
-
-        function jalankanDataDummyLokal() {
-            bankSoal = [
-                {
-                    id: 1, kategori: "PG",
-                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Pilihan Ganda Biasa</div><div class="text-justify">Soal ini adalah data dummy lokal karena gagal terhubung ke Sheet. Berapakah hasil dari 5 + 5?</div>`,
-                    opsi: ["8", "9", "10", "11"],
-                    jawabanBenar: 2, jawabanSiswa: null, ragu: false, isSurvei: false
-                },
-                {
-                    id: 2, kategori: "MCMA",
-                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Pilihan Ganda Kompleks</div><div class="text-justify">Pilih semua opsi yang merupakan nama buah!</div>`,
-                    opsi: ["Apel", "Bayam", "Jeruk", "Kangkung"],
-                    jawabanBenar: [0, 2], jawabanSiswa: [], ragu: false, isSurvei: false
-                },
-                {
-                    id: 3, kategori: "PGK",
-                    teks: `<div class="text-justify font-bold text-[#007bff] mb-2">Tipe: Benar/Salah</div><div class="text-justify">Tentukan benar atau salah pernyataan di bawah ini:</div>`,
-                    opsi: ["Bumi memiliki bentuk bulat.", "Matahari mengelilingi bulan."],
-                    jawabanBenar: ['B', 'S'], jawabanSiswa: [null, null], ragu: false, isSurvei: false
-                },
-                {
-                    id: 4, kategori: "PG",
-                    teks: `<div class="text-justify font-bold text-green-600 mb-2">Tipe: Survei Lingkungan</div><div class="text-justify">Apakah kamu suka belajar di sekolah?</div>`,
-                    opsi: ["Sangat Suka", "Suka", "Biasa Saja", "Tidak Suka"],
-                    jawabanBenar: 0, jawabanSiswa: null, ragu: false, isSurvei: true // Dummy survei
-                }
-            ];
-
-            totalWaktuDetik = 75 * 60;
-            currentIndex = 0;
-            hasSeenSurveyTransition = false;
-            mataUjianAktif = "Data Dummy";
-
-            const modalLoading = document.getElementById('modalLoading');
-            modalLoading.classList.add('opacity-0');
-            setTimeout(() => {
-                modalLoading.classList.remove('flex');
-                modalLoading.classList.add('hidden');
-                renderGridDaftarSoal();
-                tampilkanSoal(currentIndex);
-                mulaiTimer();
-            }, 500);
         }
 
         function tampilkanSoal(index) {
@@ -1235,7 +1199,6 @@
 
         function bukaModalSelesai() {
             let blmSempurna = 0;
-            // Peringatan tetap menghitung semua soal termasuk survei (agar siswa tidak malas mengisi survei)
             bankSoal.forEach(s => {
                 if(s.kategori === 'PG' && s.jawabanSiswa === null) blmSempurna++;
                 else if(s.kategori === 'MCMA' && s.jawabanSiswa.length === 0) blmSempurna++;
@@ -1272,7 +1235,7 @@
                 let isCorrect = false;
 
                 if(soal.kategori === 'PG') {
-                    if(soal.jawabanBenar !== null && soal.jawabanSiswa !== null && soal.jawabanSiswa === soal.jawabanBenar) {
+                    if(soal.jawabanBenar !== null &&"0" !== String(soal.jawabanBenar) && soal.jawabanSiswa !== null && String(soal.jawabanSiswa) === String(soal.jawabanBenar)) {
                         isCorrect = true;
                     }
                 } 
